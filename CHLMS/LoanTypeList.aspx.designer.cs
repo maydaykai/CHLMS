@@ -10,7 +10,7 @@
 namespace WebUI {
     
     
-    public partial class LoanEdit {
+    public partial class LoanTypeList {
         
         /// <summary>
         /// Head1 控件。
@@ -38,33 +38,6 @@ namespace WebUI {
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::WebUI.UserControl.Menu Menu;
-        
-        /// <summary>
-        /// loanForm 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm loanForm;
-        
-        /// <summary>
-        /// sel_customerID 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox sel_customerID;
-        
-        /// <summary>
-        /// sel_loanTypeID 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox sel_loanTypeID;
         
         /// <summary>
         /// Footer 控件。

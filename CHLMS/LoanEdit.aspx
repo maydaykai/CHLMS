@@ -38,21 +38,26 @@
                             <li>
                                 <a href="LoanList.aspx">借款列表</a>
                             </li>
-                            <li class="active">添加/修改借款</li>
+                            <li class="active">添加/查看借款</li>
                         </ol>
                     </div>
                 </div>
                 <div class="row">
                     <div class="panel panel-default bootstrap-admin-no-table-panel">
                         <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
-                            <form id="loanForm" class="form-horizontal">
+                            <form id="loanForm" runat="server" class="form-horizontal">
                                 <fieldset>
-                                    <legend>添加/修改借款</legend>
-                                    <div id="first" class="form-group">
+                                    <legend>添加/查看借款</legend>
+                                    <div id="first" class="form-group hidden">
+                                        <label class="col-lg-2 control-label" for="sp_loanNumber">借款编号：</label>
+                                        <div class="col-lg-3">
+                                            <span class="form-control" id="sp_loanNumber"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="col-lg-2 control-label" for="sel_customerID">借款人：</label>
                                         <div class="col-lg-3">
-                                            <select id="sel_customerID" class="form-control">
-                                            </select>
+                                            <asp:ListBox runat="server" ID="sel_customerID" CssClass="form-control"></asp:ListBox>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -64,8 +69,7 @@
                                     <div class="form-group">
                                         <label class="col-lg-2 control-label" for="sel_loanTypeID">标种类型：</label>
                                         <div class="col-lg-3">
-                                            <select id="sel_loanTypeID" class="form-control">
-                                            </select>
+                                            <asp:ListBox runat="server" ID="sel_loanTypeID" CssClass="form-control"></asp:ListBox>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -105,6 +109,7 @@
                                     </div>
                                     <input type="hidden" value="0" id="hid_id" />
                                     <button type="button" id="btn_save" class="btn btn-primary">保存</button>
+                                    <button type="button" class="btn btn-primary hidden" id="btn_repay">还款</button>
                                     <button type="reset" class="btn btn-default">重置</button>
                                 </fieldset>
                             </form>
@@ -115,7 +120,48 @@
         </div>
         <uc:Footer runat="server" ID="Footer" />
     </div>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <!-- Modal -->
+    <div class="modal fade" id="repay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="userForm" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">还款</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="modalFirst" class="bootstrap-admin-panel-content">
+                        <table id="repayList" class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>期号</th>
+                                    <th>应还本金</th>
+                                    <th>应还利息</th>
+                                    <th>应还日期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb_repayListHtml">
+                            </tbody>
+                        </table>
+                        <script type="text/html" id="tb_repayList">
+                            {{each list as $value i}}                       
+                                <tr class="gradeX">
+                                    <td>{{$value.PeNumber}}</td>
+                                    <td>{{$value.RePrincipal.toFixed(2) | currencyFormat:'￥'}}</td>
+                                    <td>{{$value.ReInterest.toFixed(2) | currencyFormat:'￥'}}</td>
+                                    <td>{{$value.RePayTime | dateFormat:'yyyy-MM-dd'}}</td>
+                                    <td>{{$value.Status==0?'未还':($value.Status==1?'已还':'作废')}}</td>
+                                    <td><a class="btn btn-xs btn-default" onclick="repayLoan('{{$value.ID}}');">还款</a></td>
+                                </tr>
+                            {{/each}}
+                        </script>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="vendors/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
     <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -125,18 +171,22 @@
     <script src="vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script src="js/common.js"></script>
     <script type="text/javascript">
+        var id = getPValueByName("id");
+        var type = getPValueByName("type");
         $(function () {
             var array = [{ "agent": "sel_agent" }];
-            var customerArray = [{ "customer": "sel_customerID" }];
-            var loanTypeArray = [{ "loanType": "sel_loanTypeID" }];
-            $.initCustomer(customerArray);
-            $.initLoanType(loanTypeArray);
             $.initAgent(array);
             $('#txt_loanTime').datepicker({ format: 'yyyy-mm-dd' });
+            if(type == 2)
+                getUpdateInfo(id);
             $('#btn_save').click(function () {
                 if (validate()) {
                     saveLoan(1);
                 }
+            });
+            $('#btn_repay').click(function () {
+                getRepayData();
+                $('#repay').modal();
             });
         });
         function saveLoan(type) {
@@ -209,37 +259,74 @@
             }
             return true;
         }
-        function loadInfo() {
+        function getUpdateInfo(id) {
+            $('#hid_id').val(id);
             var obj = new Object();
-            obj.currentPage = 1;
-            obj.pageSize = 10;
-            obj.filter = "";
-            obj.orderBy = "ID";
+            obj.id = id;
             var jsonobj = JSON.stringify(obj);
             $.ajax({
                 type: "POST",
-                url: "../WebService/Loan.svc/GetLoanList",
+                url: "../WebService/Loan.svc/GetLoanModel",
                 contentType: "application/json; charset=utf-8",
                 data: jsonobj,
                 dataType: 'json',
                 success: function (result) {
                     var jsondatas = JSON.parse(result.d);
-                    var html = template('tb_loanList', { list: jsondatas });
-                    $("#tb_loanListHtml").html(html);
-                    $('#loanList').dataTable({
-                        sDom: "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
-                        sPaginationType: "bootstrap",
-                        oLanguage: {
-                            sLengthMenu: "显示 _MENU_ 条记录",
-                            sInfoEmpty: "0条记录",
-                            oPaginate: {//分页的样式文本内容。
-                                sPrevious: "上一页",
-                                sNext: "下一页",
-                                sFirst: "第一页",
-                                sLast: "最后一页"
-                            }
-                        }
-                    });
+                    if (jsondatas != null) {
+                        $('#sp_loanNumber').text(jsondatas.LoanNumber);
+                        $('#sel_customerID').val(jsondatas.LoanCustomerID).attr("disabled", "disabled");
+                        $('#txt_loanAmount').val(jsondatas.LoanAmount).attr("disabled", "disabled");
+                        $('#sel_loanTypeID').val(jsondatas.LoanTypeID).attr("disabled", "disabled");
+                        $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod).attr("disabled", "disabled");
+                        $('#txt_loanTerm').val(jsondatas.LoanTerm).attr("disabled", "disabled");
+                        $('#txt_loanRate').val(jsondatas.LoanRate).attr("disabled", "disabled");
+                        $('#sel_agent').val(jsondatas.UserID).attr("disabled", "disabled");
+                        $('#txt_loanTime').val(jsondatas.LoanTime).attr("disabled", "disabled");
+                        $(':reset').attr("disabled", "disabled");
+                    } else {
+                        $.alertWarningHtml('alert-danger', '获取数据失败');
+                    }
+                    $('#btn_save').addClass('hidden');
+                    $('#btn_repay,#first').removeClass('hidden');
+                }
+            });
+        }
+        function getRepayData() {
+            var id = $('#hid_id').val();
+            var obj = new Object();
+            obj.loanID = id;
+            var jsonobj = JSON.stringify(obj);
+            $.ajax({
+                type: "POST",
+                url: "../WebService/Loan.svc/GetRepayListByID",
+                contentType: "application/json; charset=utf-8",
+                data: jsonobj,
+                dataType: 'json',
+                success: function (result) {
+                    var jsondatas = JSON.parse(result.d);
+                    var html = template('tb_repayList', { list: jsondatas });
+                    $("#tb_repayListHtml").html(html);
+                }
+            });
+        }
+        function repayLoan(id) {
+            var obj = new Object();
+            obj.repayID = id;
+            var jsonobj = JSON.stringify(obj);
+            $.ajax({
+                type: "POST",
+                url: "../WebService/Loan.svc/RepayLoanByID",
+                contentType: "application/json; charset=utf-8",
+                data: jsonobj,
+                dataType: 'json',
+                success: function (result) {
+                    var jsondatas = JSON.parse(result.d);
+                    if (jsondatas.result == "success") {
+                        $.alertWarningHtml('alert-success', jsondatas.message, "modalFirst");
+                        getRepayData();
+                    } else {
+                        $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message, "modalFirst");
+                    }
                 }
             });
         }

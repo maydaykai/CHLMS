@@ -7,6 +7,9 @@
         <li id="uList" runat="server">
             <a href="/UserList.aspx"><i class="glyphicon glyphicon-chevron-right"></i>用户列表</a>
         </li>
+        <li id="lTypeList" runat="server">
+            <a href="/LoanTypeList.aspx"><i class="glyphicon glyphicon-chevron-right"></i>标种列表</a>
+        </li>
         <li>
             <a href="/CustomerList.aspx"><i class="glyphicon glyphicon-chevron-right"></i>客户列表</a>
         </li>

@@ -19,6 +19,7 @@ namespace WebUI.WebService
     public class Loan
     {
         LoanBLL _bll = new LoanBLL();
+        #region 借款
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
         public string GetLoanList(int currentPage, int pageSize, string filter, string orderBy)
@@ -34,14 +35,6 @@ namespace WebUI.WebService
             //    };
             return JsonConvert.SerializeObject(dt);
         }
-
-        [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
-        public string GetLoanTypeList()
-        {
-            return JsonConvert.SerializeObject(new LoanBLL().GetLoanTypeList());
-        }
-
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
         public string AddLoan(LoanModel model, int type)
@@ -54,5 +47,59 @@ namespace WebUI.WebService
             }
             return "";
         }
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetLoanModel(int id)
+        {
+            return JsonConvert.SerializeObject(_bll.GetLoanModel(id));
+        }
+        #endregion
+        #region 标种类型
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetLoanTypeList()
+        {
+            return JsonConvert.SerializeObject(new LoanBLL().GetLoanTypeList());
+        }
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetLoanTypeModel(int id)
+        {
+            return JsonConvert.SerializeObject(new LoanBLL().GetLoanTypeModel(id));
+        }
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string AddLoanType(DimLoanTypeModel model, int type)
+        {
+            if (type == 1) //添加
+            {
+                return _bll.AddLoanType(model.Name) > 0
+                           ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage())
+                           : JsonConvert.SerializeObject(AlertHelper.ErrorMessage());
+            }
+            return _bll.UpdateLoanType(model)
+                       ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage("修改成功"))
+                       : JsonConvert.SerializeObject(AlertHelper.ErrorMessage("修改失败"));
+        }
+        #endregion
+        #region 还款
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetRepayListByID(int loanID)
+        {
+            return JsonConvert.SerializeObject(new LoanBLL().GetRepayListByID(loanID));
+        }
+        [OperationContract]
+
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string RepayLoanByID(int repayID)
+        {
+            return _bll.RepayLoanByID(repayID)
+                       ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage("还款成功"))
+                       : JsonConvert.SerializeObject(AlertHelper.ErrorMessage("还款失败"));
+        }
+
+        #endregion
     }
 }

@@ -14,33 +14,25 @@ namespace WebUI
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            InitAgent();
         }
+        private void InitAgent()
+        {
+            int totalRows = 0;
+            sel_customerID.DataSource = new CustomerBLL().GetPageCustomerList("ID", 1, 100, ref totalRows);
+            sel_customerID.DataValueField = "ID";
+            sel_customerID.DataTextField = "Name";
+            sel_customerID.Rows = 1;
+            sel_customerID.DataBind();
+            sel_customerID.Items.Insert(0, new ListItem("--请选择--", "0"));
 
-        //protected void Btn_Click(object sender, EventArgs e)
-        //{
-        //    var loanCustomerID = ConvertHelper.ToInt(sel_customerID.Value);
-        //    var loanAmount = ConvertHelper.ToDecimal(txt_loanAmount.Value);
-        //    var loanTypeID = ConvertHelper.ToInt(sel_loanTypeID.Value);
-        //    var repaymentmethod = ConvertHelper.ToInt(sel_repaymentmethod.Value);
-        //    var loanTerm = ConvertHelper.ToInt(txt_loanTerm.Value);
-        //    var loanRate = ConvertHelper.ToDecimal(txt_loanRate.Value);
-        //    var agent = ConvertHelper.ToInt(sel_agent.Value);
-        //    var loanTime = ConvertHelper.ToDateTime(txt_loanTime.Value);
-        //    LoanModel model = new LoanModel
-        //        {
-        //            LoanCustomerID = loanCustomerID,
-        //            LoanAmount = loanAmount,
-        //            LoanTypeID = loanTypeID,
-        //            RepaymentMethod = repaymentmethod,
-        //            LoanTerm = loanTerm,
-        //            LoanRate = loanRate,
-        //            UserID = agent,
-        //            LoanTime = loanTime,
-        //            CreateTime = DateTime.Now,
-        //            Status = 1
-        //        };
-        //    //new LoanBLL().AddLoan(model);
-        //}
+
+            sel_loanTypeID.DataSource = new LoanBLL().GetLoanTypeList();
+            sel_loanTypeID.DataValueField = "ID";
+            sel_loanTypeID.DataTextField = "Name";
+            sel_loanTypeID.Rows = 1;
+            sel_loanTypeID.DataBind();
+            sel_loanTypeID.Items.Insert(0, new ListItem("--请选择--", "0"));
+        }
     }
 }

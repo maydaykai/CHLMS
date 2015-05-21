@@ -18,6 +18,7 @@ namespace WebUI.UserControl
                 if (UserID != 1)
                 {
                     uList.Visible = false;
+                    lTypeList.Visible = false;
                 }
             }
         }

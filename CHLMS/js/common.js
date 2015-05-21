@@ -1,11 +1,12 @@
 ﻿(function($) {
-    $.alertWarningHtml = function(icon, warningTxt) {
+    $.alertWarningHtml = function (icon, warningTxt, id) {
+        if (id == undefined) id = "first";
         $('.alert').alert('close');
         var html = '<div class="alert ' + icon + '">' +
             '<a class="close" data-dismiss="alert" href="#">&times;</a>' +
             warningTxt +
             '</div>';
-        $('#first').before(html);
+        $('#' + id).before(html);
     },
     $.commonAjax = function (url, jsonobj, successCall) {
         $.ajax({
@@ -89,3 +90,24 @@
         return "\/Date(" + jsDate.getTime() + "+0000)\/";
     }
 })(jQuery);
+//url获取参数
+function param(name, value) {
+    this.name = name;
+    this.value = value;
+}
+var url = window.location.href;
+var p = url.split("?");
+var all = new Array();
+var params = p.length > 1 ? p[1].split("&") : new Array();
+for (var i = 0; i < params.length; i++) {
+    var pname = params[i].split("=")[0];
+    var pvalue = params[i].split("=")[1];
+    all[i] = new param(pname, pvalue);
+}
+//获取参数值
+function getPValueByName(name) {
+    for (var i = 0; i < all.length; i++) {
+        if (all[i].name == name)
+            return all[i].value;
+    }
+}

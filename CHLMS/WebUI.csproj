@@ -64,9 +64,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="about.html" />
     <Content Include="BasePage.aspx" />
-    <Content Include="buttons-and-icons.html" />
     <Content Include="css\bootstrap-admin-theme.css" />
     <Content Include="css\bootstrap-theme.css" />
     <Content Include="css\bootstrap-theme.min.css" />
@@ -76,15 +74,12 @@
     <Content Include="css\DT_bootstrap.css" />
     <Content Include="css\uniform.default.fixes.css" />
     <Content Include="CustomerList.aspx" />
-    <Content Include="default.html" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="forms.html" />
     <Content Include="images\bg-input-focus.png" />
     <Content Include="images\bg-input.png" />
     <Content Include="images\meritoo_logo.png" />
     <Content Include="images\sprite.png" />
     <Content Include="Index.aspx" />
-    <Content Include="index.html" />
     <Content Include="js\bootstrap.js" />
     <Content Include="js\bootstrap.min.js" />
     <Content Include="js\common.js" />
@@ -98,11 +93,9 @@
     <Content Include="js\twitter-bootstrap-hover-dropdown.min.js" />
     <Content Include="LoanEdit.aspx" />
     <Content Include="LoanList.aspx" />
+    <Content Include="LoanTypeList.aspx" />
     <Content Include="Login.aspx" />
-    <Content Include="login.html" />
     <Content Include="LoginOut.aspx" />
-    <Content Include="tables.html" />
-    <Content Include="ui-and-interface.html" />
     <Content Include="UserControl\Footer.ascx" />
     <Content Include="UserControl\Header.ascx" />
     <Content Include="UserControl\Menu.ascx" />
@@ -1156,7 +1149,6 @@
     <Content Include="WebService\Customer.svc" />
     <Content Include="WebService\Loan.svc" />
     <Content Include="WebService\User.svc" />
-    <Content Include="wysiwyg-editors.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasePage.aspx.cs">
@@ -1193,6 +1185,13 @@
     </Compile>
     <Compile Include="LoanList.aspx.designer.cs">
       <DependentUpon>LoanList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoanTypeList.aspx.cs">
+      <DependentUpon>LoanTypeList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoanTypeList.aspx.designer.cs">
+      <DependentUpon>LoanTypeList.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

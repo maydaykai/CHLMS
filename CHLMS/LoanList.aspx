@@ -66,7 +66,7 @@
                                             <td>{{$value.RepaymentMethodName}}</td>   
                                             <td>{{$value.StatusStr}}</td>                                       
                                             <td>{{$value.LoanTime | dateFormat:'yyyy-MM-dd'}}</td>
-                                            <td><button class="btn btn-sm btn-primary" id="updateLoan" data-id="{{$value.ID}}">修改/查看</button></td>
+                                            <td><button class="btn btn-sm btn-default" onclick="getUpdateInfo('{{$value.ID}}');">查看</button></td>
                                         </tr>
                                     {{/each}}
                                 </script>
@@ -90,10 +90,10 @@
                 $('#addLoan').click(function() {
                     window.location.href = 'LoanEdit.aspx?type=1&id=0';
                 });
-                $('#updateLoan').click(function () {
-                    window.location.href = 'LoanEdit.aspx?type=2&id=' + this.data("id");
-                });
             });
+            function getUpdateInfo(id){
+                window.location.href = 'LoanEdit.aspx?type=2&id=' + id;
+            }
             function loadInfo() {
                 var obj = new Object();
                 obj.currentPage = 1;
