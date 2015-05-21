@@ -7,18 +7,36 @@
 // </自动生成>
 //------------------------------------------------------------------------------
 
-namespace CHLMS {
+namespace WebUI {
     
     
     public partial class Index {
         
         /// <summary>
-        /// style_color 控件。
+        /// Header 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlLink style_color;
+        protected global::WebUI.UserControl.Header Header;
+        
+        /// <summary>
+        /// Menu 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::WebUI.UserControl.Menu Menu;
+        
+        /// <summary>
+        /// Footer 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::WebUI.UserControl.Footer Footer;
     }
 }

@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace CHLMS
+namespace WebUI
 {
-    public partial class Index : System.Web.UI.Page
+    public partial class Index : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
         {

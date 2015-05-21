@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace CHLMS.UserControl
+namespace WebUI.UserControl
 {
     public partial class Footer : System.Web.UI.UserControl
     {

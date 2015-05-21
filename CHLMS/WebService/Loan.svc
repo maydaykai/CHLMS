@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WebUI.WebService.Loan" CodeBehind="Loan.svc.cs" %>
