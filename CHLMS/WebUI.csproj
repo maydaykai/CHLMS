@@ -40,12 +40,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Edm.5.0.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.OData.5.0.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Services.5.0.0\lib\net40\Microsoft.Data.Services.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.0.0\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Spatial, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Spatial.5.0.0\lib\net40\System.Spatial.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -74,6 +95,7 @@
     <Content Include="css\DT_bootstrap.css" />
     <Content Include="css\uniform.default.fixes.css" />
     <Content Include="CustomerList.aspx" />
+    <Content Include="ExpireManage.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="images\bg-input-focus.png" />
     <Content Include="images\bg-input.png" />
@@ -85,6 +107,31 @@
     <Content Include="js\common.js" />
     <Content Include="js\dataTables.tableTools.js" />
     <Content Include="js\DT_bootstrap.js" />
+    <Content Include="js\jquery.query.js" />
+    <Content Include="js\My97DatePicker\calendar.js" />
+    <Content Include="js\My97DatePicker\lang\en.js" />
+    <Content Include="js\My97DatePicker\lang\zh-cn.js" />
+    <Content Include="js\My97DatePicker\lang\zh-tw.js" />
+    <Content Include="js\My97DatePicker\skin\datePicker.gif" />
+    <Content Include="js\My97DatePicker\skin\default\datepicker.css" />
+    <Content Include="js\My97DatePicker\skin\default\img.gif" />
+    <Content Include="js\My97DatePicker\skin\WdatePicker.css" />
+    <Content Include="js\My97DatePicker\skin\whyGreen\bg.jpg" />
+    <Content Include="js\My97DatePicker\skin\whyGreen\datepicker.css" />
+    <Content Include="js\My97DatePicker\skin\whyGreen\img.gif" />
+    <Content Include="js\My97DatePicker\WdatePicker.js" />
+    <Content Include="js\My97DatePicker\开发包\lang\en.js" />
+    <Content Include="js\My97DatePicker\开发包\lang\zh-cn.js" />
+    <Content Include="js\My97DatePicker\开发包\lang\zh-tw.js" />
+    <Content Include="js\My97DatePicker\开发包\readme.txt" />
+    <Content Include="js\My97DatePicker\开发包\skin\datePicker.gif" />
+    <Content Include="js\My97DatePicker\开发包\skin\default\datepicker.css" />
+    <Content Include="js\My97DatePicker\开发包\skin\default\img.gif" />
+    <Content Include="js\My97DatePicker\开发包\skin\WdatePicker.css" />
+    <Content Include="js\My97DatePicker\开发包\skin\whyGreen\bg.jpg" />
+    <Content Include="js\My97DatePicker\开发包\skin\whyGreen\datepicker.css" />
+    <Content Include="js\My97DatePicker\开发包\skin\whyGreen\img.gif" />
+    <Content Include="js\validatorRegex.js" />
     <Content Include="js\html5shiv.js" />
     <Content Include="js\respond.min.js" />
     <Content Include="js\template-helper.js" />
@@ -96,6 +143,8 @@
     <Content Include="LoanTypeList.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="LoginOut.aspx" />
+    <Content Include="RepaymentEidt.aspx" />
+    <Content Include="test.aspx" />
     <Content Include="UserControl\Footer.ascx" />
     <Content Include="UserControl\Header.ascx" />
     <Content Include="UserControl\Menu.ascx" />
@@ -1148,6 +1197,8 @@
     <Content Include="Web.config" />
     <Content Include="WebService\Customer.svc" />
     <Content Include="WebService\Loan.svc" />
+    <Content Include="WebService\Repayment.svc" />
+    <Content Include="WebService\RepaymentServer.svc" />
     <Content Include="WebService\User.svc" />
   </ItemGroup>
   <ItemGroup>
@@ -1164,6 +1215,13 @@
     </Compile>
     <Compile Include="CustomerList.aspx.designer.cs">
       <DependentUpon>CustomerList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ExpireManage.aspx.cs">
+      <DependentUpon>ExpireManage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExpireManage.aspx.designer.cs">
+      <DependentUpon>ExpireManage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
@@ -1208,6 +1266,20 @@
       <DependentUpon>LoginOut.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepaymentEidt.aspx.cs">
+      <DependentUpon>RepaymentEidt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RepaymentEidt.aspx.designer.cs">
+      <DependentUpon>RepaymentEidt.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="test.aspx.cs">
+      <DependentUpon>test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="test.aspx.designer.cs">
+      <DependentUpon>test.aspx</DependentUpon>
+    </Compile>
     <Compile Include="UserControl\Footer.ascx.cs">
       <DependentUpon>Footer.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1248,6 +1320,12 @@
     </Compile>
     <Compile Include="WebService\Loan.svc.cs">
       <DependentUpon>Loan.svc</DependentUpon>
+    </Compile>
+    <Compile Include="WebService\Repayment.svc.cs">
+      <DependentUpon>Repayment.svc</DependentUpon>
+    </Compile>
+    <Compile Include="WebService\RepaymentServer.svc.cs">
+      <DependentUpon>RepaymentServer.svc</DependentUpon>
     </Compile>
     <Compile Include="WebService\User.svc.cs">
       <DependentUpon>User.svc</DependentUpon>
@@ -1427,11 +1505,14 @@
     <Content Include="vendors\uniform\www\CNAME" />
     <Content Include="vendors\uniform\www\downloads\.keep" />
     <Content Include="vendors\uniform\www\stylesheets\multiple-themes.scss" />
+    <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\chlms.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

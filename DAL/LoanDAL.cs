@@ -19,18 +19,20 @@ namespace DAL
         public bool AddLoan(LoanModel model)
         {
             SqlParameter[] parameters = {
-			            new SqlParameter("@LoanDate", SqlDbType.DateTime){Value= model.LoanTime},
+			            new SqlParameter("@LoanDate", SqlDbType.Date){Value= model.LoanDate},
                         new SqlParameter("@UserID", SqlDbType.Int,4){Value= model.UserID},
                         new SqlParameter("@LoanAmount", SqlDbType.Decimal,9){Value= model.LoanAmount},
                         new SqlParameter("@LoanRate", SqlDbType.Decimal,9){Value= model.LoanRate},
                         new SqlParameter("@LoanTerm", SqlDbType.Int,4){Value= model.LoanTerm},
                         new SqlParameter("@RepaymentMethod", SqlDbType.Int,4){Value= model.RepaymentMethod},
+                        new SqlParameter("@BorrowMode", SqlDbType.SmallInt){Value= model.BorrowMode},
+                        new SqlParameter("@CalculateHead", SqlDbType.SmallInt){Value= model.CalculateHead},
                         new SqlParameter("@LoanTypeID", SqlDbType.Int,4){Value= model.LoanTypeID},
                         new SqlParameter("@LoanCustomerID", SqlDbType.Int,4){Value= model.LoanCustomerID},
                         new SqlParameter("@ret",SqlDbType.Int,4){Direction = ParameterDirection.ReturnValue} //定义返回值参数
                         };
             SqlHelper.ExecuteNonQuery(SqlHelper.ConnectionStringLocal, CommandType.StoredProcedure, "[dbo].[Proc_AddLoan]", parameters);
-            int num = Convert.ToInt32(parameters[8].Value);
+            int num = Convert.ToInt32(parameters[10].Value);
             return num > 0;
         }
         /// <summary>
@@ -40,7 +42,7 @@ namespace DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select top 1 ID, CreateTime, LoanTime, UserID, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, LoanTypeID, [Status]  ");
+            strSql.Append("select top 1 ID, CreateTime, LoanDate, UserID, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, LoanTypeID, [Status]  ");
             strSql.Append(" from Loan ");
             if (!string.IsNullOrEmpty(strWhere))
             {
@@ -61,9 +63,9 @@ namespace DAL
                 {
                     model.CreateTime = DateTime.Parse(ds.Tables[0].Rows[0]["CreateTime"].ToString());
                 }
-                if (ds.Tables[0].Rows[0]["LoanTime"].ToString() != "")
+                if (ds.Tables[0].Rows[0]["LoanDate"].ToString() != "")
                 {
-                    model.LoanTime = DateTime.Parse(ds.Tables[0].Rows[0]["LoanTime"].ToString());
+                    model.LoanDate = DateTime.Parse(ds.Tables[0].Rows[0]["LoanDate"].ToString());
                 }
                 if (ds.Tables[0].Rows[0]["UserID"].ToString() != "")
                 {

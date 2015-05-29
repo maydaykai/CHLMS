@@ -48,28 +48,12 @@
                             <label for="txt_email" class="control-label">邮箱:</label>
                             <input type="text" class="form-control" id="txt_email" placeholder="请输入邮箱" />
                         </div>
-                        <div class="btn-group">
-                            <label for="sel_type" class="control-label">用户类型:</label>
-                            <select id="sel_type" class="form-control">
-                                <option value="1">系统用户</option>
-                                <option value="2">营销人员</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-10">
-                                <div class="checkbox">
-                                <label>
-                                    是否允许登录<input id="chk_isActive" type="checkbox" checked="checked" />
-                                </label>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
             <uc:Footer runat="server" ID="Footer" />
         </div>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
         <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>

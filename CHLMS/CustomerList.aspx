@@ -42,7 +42,7 @@
                                 <table class="table table-striped table-bordered" id="customerList">
                                     <thead>
                                         <tr>
-                                            <th>显示名称</th>
+                                            <th>用户名</th>
                                             <th>真实姓名</th>
                                             <th>手机号码</th>
                                             <th>身份证号码</th>
@@ -72,27 +72,27 @@
         <!-- Modal -->
         <div class="modal fade" id="addCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
-            <form class="modal-content">
+            <form id="customerForm" class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">添加客户</h4>
               </div>
               <div class="modal-body">
                 <div id="first" class="form-group">
-                    <label for="txt_userName" class="control-label">显示名称:</label>
-                    <input type="text" class="form-control" id="txt_userName" placeholder="请输入显示名称" />
+                    <label for="txt_userName" class="control-label">用户名:</label>
+                    <input type="text" class="form-control" id="txt_userName" placeholder="请输入用户名" />
                 </div>
                 <div class="form-group">
                     <label for="txt_realName" class="control-label">真实姓名:</label>
                     <input type="text" class="form-control" id="txt_realName" placeholder="请输入真实姓名" />
                 </div>
                 <div class="form-group">
-                    <label for="txt_mobile" class="control-label">手机号码:</label>
-                    <input type="text" class="form-control" id="txt_mobile" placeholder="请输入手机号码" />
-                </div>
-                <div class="form-group">
                     <label for="txt_identity" class="control-label">身份证号码:</label>
                     <input type="text" class="form-control" id="txt_identity" placeholder="请输入身份证号码" />
+                </div>
+                <div class="form-group">
+                    <label for="txt_mobile" class="control-label">手机号码:</label>
+                    <input type="text" class="form-control" id="txt_mobile" placeholder="请输入手机号码" />
                 </div>
                 <div class="form-group">
                     <label for="txt_address" class="control-label">地址:</label>
@@ -106,7 +106,7 @@
             </form>
           </div>
         </div>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
         <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -115,6 +115,7 @@
         <script type="text/javascript" src="js/template.js"></script>
         <script type="text/javascript" src="js/template-helper.js"></script>
         <script src="js/common.js"></script>
+        <script src="js/validatorRegex.js"></script>
         <script type="text/javascript">
             $(function () {
                 loadInfo();
@@ -140,16 +141,19 @@
                             var jsondatas = JSON.parse(result.d);
                             if (jsondatas.result == "success") {
                                 $.alertWarningHtml('alert-success', jsondatas.message);
-                                $(".modal-content")[0].reset();
+                                $("#customerForm")[0].reset();
+                                loadInfo();
                             } else {
                                 $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message);
                             }
                         }
                     });
-                    $('#addUser').on('hidden.bs.modal', function () {
-                        loadInfo();
-                    });
                 });
+                $('#addCustomer').on('hidden.bs.modal', function () {
+                    loadInfo();
+                    $('.alert').hide();
+                });
+                $("a:contains('客户列表')").parent().addClass("active").siblings().removeClass("active");
             });
             function validate() {
                 var userName = $('#txt_userName').val();
@@ -160,16 +164,37 @@
                     $.alertWarningHtml('alert-warning', '请输入用户名');
                     return false;
                 }
+                if ($.trim(userName).length < 5 || $.trim(userName).length > 12) {
+                    $.alertWarningHtml('alert-warning', '您输入的用户名长度错误,应在5~12个字符之间,请确认');
+                    return false;
+                }
+                if (!new RegExp(regexEnum.username).test($.trim(userName))) {
+                    $.alertWarningHtml('alert-warning', '用户名不包含除26个英文字母或数字以外的字符');
+                    return false;
+                }
                 if ($.trim(realName) == "") {
                     $.alertWarningHtml('alert-warning', '请输入真实姓名');
+                    return false;
+                }
+                if ($.trim(realName).length < 2 || $.trim(realName).length > 12) {
+                    $.alertWarningHtml('alert-warning', '您输入的真实姓名长度错误,应在2~12个字符之间,请确认');
+                    return false;
+                }
+                if ($.trim(identity) == "") {
+                    $.alertWarningHtml('alert-warning', '请输入身份证号码');
+                    return false;
+                }
+                var msg = isCardID($.trim(identity));
+                if (!(msg === true)) {
+                    $.alertWarningHtml('alert-warning', msg);
                     return false;
                 }
                 if ($.trim(mobile) == "") {
                     $.alertWarningHtml('alert-warning', '请输入手机号码');
                     return false;
                 }
-                if ($.trim(identity) == "") {
-                    $.alertWarningHtml('alert-warning', '请输入身份证号码');
+                if (!new RegExp(regexEnum.mobile).test($.trim(mobile))) {
+                    $.alertWarningHtml('alert-warning', '手机号码格式错误');
                     return false;
                 }
                 return true;
@@ -177,7 +202,7 @@
             function loadInfo() {
                 var obj = new Object();
                 obj.currentPage = 1;
-                obj.pageSize = 10;
+                obj.pageSize = 1000;
                 obj.filter = "";
                 obj.orderBy = "ID";
                 var jsonobj = JSON.stringify(obj);
@@ -203,7 +228,9 @@
                                     sFirst: "第一页",
                                     sLast: "最后一页"
                                 }
-                            }
+                            },
+                            bRetrieve: true,
+                            bProcessing: true
                         });
                         //                        var tt = new $.fn.dataTable.TableTools(table);
                         //

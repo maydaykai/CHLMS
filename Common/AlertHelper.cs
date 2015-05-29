@@ -20,5 +20,14 @@ namespace Common
         {
             return new { result = "danger", message = msg };
         }
+
+        public static object DelSuccessMessage(string msg = "删除成功")
+        {
+            return new { result = "success", message = msg };
+        }
+        public static object DelErrorMessage(string msg = "删除失败")
+        {
+            return new { result = "danger", message = msg };
+        }
     }
 }

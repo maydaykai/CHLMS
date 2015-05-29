@@ -93,7 +93,7 @@ namespace Model
         /// <summary>
         /// 借款时间
         /// </summary>
-        public DateTime LoanTime
+        public DateTime LoanDate
         {
             get;
             set;
@@ -106,6 +106,50 @@ namespace Model
             get;
             set;
         }
+
+        public string EndTime
+        {
+            get
+            {
+                return LoanDate.AddMonths(LoanTerm).ToString("yyyy-MM-dd");
+
+            }
+
+        }
+        public string critemToString
+        {
+            get
+            {
+                return LoanDate.ToString("yyyy-MM-dd");
+
+            }
+
+        }
+        public string RepaymentMethodStr
+        {
+
+            get
+            {
+                string relust = string.Empty;
+                switch (RepaymentMethod)
+                {
+                    case 1: relust = "按月付息到期还本"; break;
+                    case 2: relust = "按月平息"; break;
+
+                }
+                return relust;
+            }
+        }
+        /// <summary>
+        /// 借款期限方式：0：按天借款 1：按月借款
+        /// </summary>
+        public int BorrowMode
+        { get; set; }
+        /// <summary>
+        /// 0：算头不算尾；1：算头算尾
+        /// </summary>
+        public int CalculateHead
+        { get; set; }
     }
 }
 

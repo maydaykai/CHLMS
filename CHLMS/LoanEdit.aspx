@@ -75,11 +75,21 @@
                                     <div class="form-group">
                                         <label class="col-lg-2 control-label" for="sel_repaymentmethod">还款方式：</label>
                                         <div class="col-lg-3">
-                                                <select id="sel_repaymentmethod" class="form-control">
-                                                    <option value="0">--请选择--</option>
-                                                    <option value="1">按月付息到期还本</option>
-                                                    <option value="2">按月平息</option>
-                                                </select>
+                                            <select id="sel_repaymentmethod" class="form-control">
+                                                <option value="0">--请选择--</option>
+                                                <option value="1">按月付息到期还本</option>
+                                                <option value="2">按月平息</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="sel_repaymentmethod">还款方式：</label>
+                                        <div class="col-lg-3">
+                                            <select id="sel_calculateHead" class="form-control disabled" disabled="disabled">
+                                                <option value="-1">--请选择--</option>
+                                                <option value="0" selected="selected">算头不算尾</option>
+                                                <option value="1">算头算尾</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -95,9 +105,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-lg-2 control-label" for="txt_loanTime">借款时间：</label>
+                                        <label class="col-lg-2 control-label" for="txt_loanDate">借款日期：</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control" id="txt_loanTime" type="text" placeholder="请选择" />
+                                            <input class="form-control" id="txt_loanDate" type="text" placeholder="请选择" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -152,7 +162,10 @@
                                     <td>{{$value.ReInterest.toFixed(2) | currencyFormat:'￥'}}</td>
                                     <td>{{$value.RePayTime | dateFormat:'yyyy-MM-dd'}}</td>
                                     <td>{{$value.Status==0?'未还':($value.Status==1?'已还':'作废')}}</td>
-                                    <td><a class="btn btn-xs btn-default" onclick="repayLoan('{{$value.ID}}');">还款</a></td>
+                                    <td>{{if $value.Status==0}}
+                                            <a class="btn btn-xs btn-default" onclick="repayLoan('{{$value.ID}}');">还款</a>
+                                        {{/if}}
+                                    </td>
                                 </tr>
                             {{/each}}
                         </script>
@@ -161,7 +174,7 @@
             </form>
         </div>
     </div>
-    <script src="vendors/jquery-1.9.1.js"></script>
+    <script src="vendors/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
     <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -170,14 +183,15 @@
     <script type="text/javascript" src="js/template-helper.js"></script>
     <script src="vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script src="js/common.js"></script>
+
     <script type="text/javascript">
         var id = getPValueByName("id");
         var type = getPValueByName("type");
         $(function () {
             var array = [{ "agent": "sel_agent" }];
             $.initAgent(array);
-            $('#txt_loanTime').datepicker({ format: 'yyyy-mm-dd' });
-            if(type == 2)
+            $('#txt_loanDate').datepicker({ format: 'yyyy-mm-dd' });
+            if (type == 2)
                 getUpdateInfo(id);
             $('#btn_save').click(function () {
                 if (validate()) {
@@ -185,8 +199,12 @@
                 }
             });
             $('#btn_repay').click(function () {
-                getRepayData();
-                $('#repay').modal();
+                //跳转到还款页面
+                // 获取url 参数 id
+               // alert(id);
+                window.location.href = "RepaymentEidt.aspx?id=" + id;
+                //getRepayData();
+               // $('#repay').modal();
             });
         });
         function saveLoan(type) {
@@ -197,10 +215,12 @@
                 LoanAmount: $.trim($('#txt_loanAmount').val()),
                 LoanTypeID: $.trim($('#sel_loanTypeID').val()),
                 RepaymentMethod: $.trim($('#sel_repaymentmethod').val()),
+                CalculateHead: $.trim($('#sel_calculateHead').val()),
+                BorrowMode: 1,
                 LoanTerm: $.trim($('#txt_loanTerm').val()),
                 LoanRate: $('#txt_loanRate').val(),
                 UserID: $('#sel_agent').val(),
-                LoanTime: $.jsDate2WcfDate(new Date($('#txt_loanTime').val()))
+                LoanDate: $.jsDate2WcfDate(new Date($('#txt_loanDate').val()))
             });
             obj.type = type;
             var jsonobj = JSON.stringify(obj);
@@ -215,22 +235,32 @@
                     if (jsondatas.result == "success") {
                         $.alertWarningHtml('alert-success', jsondatas.message);
                         $('#loanForm')[0].reset();
+                        window.parent.loadInfo();
                     } else {
                         $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message);
                     }
                 }
             });
         }
-        function validate(){
+        function validate() {
+            var customerID = $('#sel_customerID').val();
             var loanAmount = $("#txt_loanAmount").val();
             var loanTypeID = $("#sel_loanTypeID").val();
             var repaymentmethod = $("#sel_repaymentmethod").val();
             var loanTerm = $("#txt_loanTerm").val();
             var loanRate = $("#txt_loanRate").val();
             var agent = $("#sel_agent").val();
-            var loanTime = $("#txt_loanTime").val();
+            var loanDate = $("#txt_loanDate").val();
+            if (customerID == 0) {
+                $.alertWarningHtml('alert-warning', '请选择借款人');
+                return false;
+            }
             if ($.trim(loanAmount) == "") {
                 $.alertWarningHtml('alert-warning', '请输入借款金额');
+                return false;
+            }
+            if (isNaN($.trim(loanAmount))) {
+                $.alertWarningHtml('alert-warning', '请输入正确的金额');
                 return false;
             }
             if (loanTypeID == 0) {
@@ -245,16 +275,24 @@
                 $.alertWarningHtml('alert-warning', '请输入借款期限');
                 return false;
             }
+            if (isNaN($.trim(loanTerm)) || $.trim(loanTerm) < 1 || $.trim(loanTerm) > 36) {
+                $.alertWarningHtml('alert-warning', '请输入正确的期限');
+                return false;
+            }
             if ($.trim(loanRate) == "") {
                 $.alertWarningHtml('alert-warning', '请输入借款年利率');
                 return false;
             }
-            if (agent == 0) {
-                $.alertWarningHtml('alert-warning', '请选择经办人');
+            if (isNaN($.trim(loanRate)) || $.trim(loanRate) < 0 || $.trim(loanRate) > 36) {
+                $.alertWarningHtml('alert-warning', '请输入正确的年利率');
                 return false;
             }
-            if (loanTime == "") {
+            if (loanDate == "") {
                 $.alertWarningHtml('alert-warning', '请选择借款时间');
+                return false;
+            }
+            if (agent == 0) {
+                $.alertWarningHtml('alert-warning', '请选择经办人');
                 return false;
             }
             return true;
@@ -281,7 +319,7 @@
                         $('#txt_loanTerm').val(jsondatas.LoanTerm).attr("disabled", "disabled");
                         $('#txt_loanRate').val(jsondatas.LoanRate).attr("disabled", "disabled");
                         $('#sel_agent').val(jsondatas.UserID).attr("disabled", "disabled");
-                        $('#txt_loanTime').val(jsondatas.LoanTime).attr("disabled", "disabled");
+                        $('#txt_loanDate').val(jsondatas.LoanDate.substr(0, 10)).attr("disabled", "disabled");
                         $(':reset').attr("disabled", "disabled");
                     } else {
                         $.alertWarningHtml('alert-danger', '获取数据失败');

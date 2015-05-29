@@ -43,6 +43,8 @@
     <Compile Include="DimLoanTypeModel.cs" />
     <Compile Include="LoanModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepaymentModel.cs" />
+    <Compile Include="RepaymentRecordModel.cs" />
     <Compile Include="UserModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

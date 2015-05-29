@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AlertHelper.cs" />
     <Compile Include="ConvertHelper.cs" />
+    <Compile Include="Enum.cs" />
     <Compile Include="Log4NetHelper.cs" />
     <Compile Include="MD5Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

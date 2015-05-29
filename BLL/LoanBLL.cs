@@ -25,7 +25,7 @@ namespace BLL
         public DataTable GetPageLoanList(string orderBy, int pageIndex, int pageSize, ref int totalRows)
         {
             string where = "";
-            return new BaseClass().GetPageDataTable("L.ID,L.LoanNumber,T.Name LoanTypeName,L.LoanAmount,L.LoanRate,L.LoanTerm,M.Name RepaymentMethodName,CASE L.Status WHEN 1 THEN '借款成功' WHEN 2 THEN '还款成功' END StatusStr,L.LoanTime", "dbo.[Loan] L LEFT JOIN dbo.DimLoanType T ON L.LoanTypeID=T.ID LEFT JOIN dbo.DimRepaymentMethod M ON L.RepaymentMethod=M.ID", where, orderBy, pageIndex, pageSize, ref totalRows);
+            return new BaseClass().GetPageDataTable("L.ID,L.LoanNumber,T.Name LoanTypeName,L.LoanAmount,L.LoanRate,L.LoanTerm,M.Name RepaymentMethodName,CASE L.Status WHEN 1 THEN '借款成功' WHEN 2 THEN '还款成功' END StatusStr,L.LoanDate", "dbo.[Loan] L LEFT JOIN dbo.DimLoanType T ON L.LoanTypeID=T.ID LEFT JOIN dbo.DimRepaymentMethod M ON L.RepaymentMethod=M.ID", where, orderBy, pageIndex, pageSize, ref totalRows);
         }
         /// <summary>
         /// 添加借款并生成还款计划

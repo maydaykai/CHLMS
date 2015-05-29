@@ -27,7 +27,7 @@
            <script type="text/javascript" src="js/respond.min.js"></script>
         <![endif]-->
 
-        <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script src="js/common.js"></script>
     </head>
@@ -46,12 +46,12 @@
                     <div class="form-group">
                         <input class="form-control" type="password" id="txt_password" runat="server" placeholder="密码" />
                     </div>
-                    <div class="form-group">
+                    <%--<div class="form-group">
                         <label>
                             <input type="checkbox" name="remember_me">
                            记住密码
                         </label>
-                    </div>
+                    </div>--%>
                     <asp:Button CssClass="btn btn-lg btn-primary" runat="server" OnClick="Btn_Click" Text="提交" />
                 </div>
             </div>

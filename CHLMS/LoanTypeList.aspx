@@ -85,7 +85,7 @@
             </form>
         </div>
     </div>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
     <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -109,6 +109,7 @@
                 loadInfo();
                 $('.alert').hide();
             });
+            $("a:contains('标种列表')").parent().addClass("active").siblings().removeClass("active");
         });
         function validate() {
             var name = $('#txt_name').val();
@@ -136,6 +137,8 @@
                     var jsondatas = JSON.parse(result.d);
                     if (jsondatas.result == "success") {
                         $.alertWarningHtml('alert-success', jsondatas.message);
+                        $("#userForm")[0].reset();
+                        loadInfo();
                     } else {
                         $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message);
                     }

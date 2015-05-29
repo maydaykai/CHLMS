@@ -43,6 +43,8 @@
     <Compile Include="CustomerDAL.cs" />
     <Compile Include="LoanDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepaymentDAL.cs" />
+    <Compile Include="RepaymentRecordDAL.cs" />
     <Compile Include="UserDAL.cs" />
   </ItemGroup>
   <ItemGroup>

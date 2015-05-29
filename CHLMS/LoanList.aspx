@@ -49,7 +49,7 @@
                                             <th>借款期限</th>
                                             <th>还款方式</th>
                                             <th>状态</th>
-                                            <th>借款时间</th>
+                                            <th>借款日期</th>
                                             <th>操作</th>
                                         </tr>
                                     </thead>
@@ -65,7 +65,7 @@
                                             <td>{{$value.LoanTerm}}个月</td>      
                                             <td>{{$value.RepaymentMethodName}}</td>   
                                             <td>{{$value.StatusStr}}</td>                                       
-                                            <td>{{$value.LoanTime | dateFormat:'yyyy-MM-dd'}}</td>
+                                            <td>{{$value.LoanDate | dateFormat:'yyyy-MM-dd'}}</td>
                                             <td><button class="btn btn-sm btn-default" onclick="getUpdateInfo('{{$value.ID}}');">查看</button></td>
                                         </tr>
                                     {{/each}}
@@ -77,7 +77,7 @@
             </div>
             <uc:Footer runat="server" ID="Footer" />
         </div>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
         <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -90,6 +90,7 @@
                 $('#addLoan').click(function() {
                     window.location.href = 'LoanEdit.aspx?type=1&id=0';
                 });
+                $("a:contains('借款列表')").parent().addClass("active").siblings().removeClass("active");
             });
             function getUpdateInfo(id){
                 window.location.href = 'LoanEdit.aspx?type=2&id=' + id;
@@ -97,9 +98,9 @@
             function loadInfo() {
                 var obj = new Object();
                 obj.currentPage = 1;
-                obj.pageSize = 10;
+                obj.pageSize = 1000;
                 obj.filter = "";
-                obj.orderBy = "L.LoanTime Desc";
+                obj.orderBy = "L.LoanDate Desc";
                 var jsonobj = JSON.stringify(obj);
                 $.ajax({
                     type: "POST",

@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WebUI.js.WebService.RepaymentServer" CodeBehind="RepaymentServer.svc.cs" %>

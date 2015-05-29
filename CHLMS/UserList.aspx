@@ -46,7 +46,6 @@
                                         <th>用户类型</th>
                                         <th>真实姓名</th>
                                         <th>手机号码</th>
-                                        <th>电子邮箱</th>
                                         <th>是否允许登录</th>
                                         <th>创建时间</th>
                                         <th>操作</th>
@@ -61,7 +60,6 @@
                                             <td>{{$value.TypeStr}}</td>
                                             <td>{{$value.RealName}}</td>
                                             <td>{{$value.Mobile}}</td>
-                                            <td>{{$value.Email}}</td>
                                             <td>{{$value.IsActive ? '是' : '否'}}</td>
                                             <td>{{$value.CreateTime | dateFormat:'yyyy-MM-dd'}}</td>
                                             <td><button class="btn btn-xs btn-default" onclick="getUpdateInfo('{{$value.ID}}');">修改</button></td>
@@ -130,7 +128,7 @@
             </form>
         </div>
     </div>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="vendors/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
     <script type="text/javascript" src="vendors/datatables/js/jquery.dataTables.min.js"></script>
@@ -139,6 +137,7 @@
     <script type="text/javascript" src="js/template.js"></script>
     <script type="text/javascript" src="js/template-helper.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/validatorRegex.js"></script>
     <script type="text/javascript">
         $(function () {
             loadInfo();
@@ -154,6 +153,7 @@
                 loadInfo();
                 $('.alert').hide();
             });
+            $("a:contains('用户列表')").parent().addClass("active").siblings().removeClass("active");
             //    $('#userList').dataTable({
             //        serverSide: true,//分页，取数据等等的都放到服务端去
             //        processing: true,//载入数据的时候是否显示“载入中”
@@ -227,6 +227,14 @@
                 $.alertWarningHtml('alert-warning', '请输入用户名');
                 return false;
             }
+            if ($.trim(userName).length < 5 || $.trim(userName).length > 12) {
+                $.alertWarningHtml('alert-warning', '您输入的用户名长度错误,应在5~12个字符之间,请确认');
+                return false;
+            }
+            if (!new RegExp(regexEnum.username).test($.trim(userName))) {
+                $.alertWarningHtml('alert-warning', '用户名不包含除26个英文字母或数字以外的字符');
+                return false;
+            }
             if ($.trim(pwd) == "") {
                 $.alertWarningHtml('alert-warning', '请输入密码');
                 return false;
@@ -235,8 +243,16 @@
                 $.alertWarningHtml('alert-warning', '请输入真实姓名');
                 return false;
             }
+            if ($.trim(realName).length < 2 || $.trim(realName).length > 12) {
+                $.alertWarningHtml('alert-warning', '您输入的真实姓名长度错误,应在2~12个字符之间,请确认');
+                return false;
+            }
             if ($.trim(mobile) == "") {
                 $.alertWarningHtml('alert-warning', '请输入手机号码');
+                return false;
+            }
+            if (!new RegExp(regexEnum.mobile).test($.trim(mobile))) {
+                $.alertWarningHtml('alert-warning', '手机号码格式错误');
                 return false;
             }
             return true;
@@ -266,6 +282,7 @@
                     var jsondatas = JSON.parse(result.d);
                     if (jsondatas.result == "success") {
                         $.alertWarningHtml('alert-success', jsondatas.message);
+                        loadInfo();
                     } else {
                         $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message);
                     }
@@ -311,7 +328,7 @@
         function loadInfo() {
             var obj = new Object();
             obj.currentPage = 1;
-            obj.pageSize = 10;
+            obj.pageSize = 1000;
             obj.filter = "";
             obj.orderBy = "ID";
             var jsonobj = JSON.stringify(obj);

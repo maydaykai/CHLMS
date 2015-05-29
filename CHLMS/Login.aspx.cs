@@ -40,6 +40,7 @@ namespace WebUI
             {
                 string url = ConvertHelper.QueryString(Request, "nexturl", "");
                 SessionHelper.Add("UserID", info.ID);
+                SessionHelper.Add("UserInfo", info);
                 Response.Redirect(!string.IsNullOrEmpty(url) ? url : "Index.aspx");
             }
             else
