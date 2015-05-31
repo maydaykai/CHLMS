@@ -124,7 +124,9 @@
                                     sFirst: "第一页",
                                     sLast: "最后一页"
                                 }
-                            }
+                            },
+                            bRetrieve: true,
+                            bProcessing: true
                         });
                     }
                 });

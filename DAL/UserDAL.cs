@@ -17,7 +17,7 @@ namespace DAL
         /// </summary>
         public int AddUser(UserModel model)
         {
-            StringBuilder strSql = new StringBuilder();
+            var strSql = new StringBuilder();
             strSql.Append("insert into [User](");
             strSql.Append("LoginName,Password,RealName,CreateTime,IsActive,Email,Mobile,Type,LoanTypePermission");
             strSql.Append(") values (");
@@ -43,7 +43,7 @@ namespace DAL
         /// </summary>
         public bool UpdateUser(UserModel model)
         {
-            StringBuilder strSql = new StringBuilder();
+            var strSql = new StringBuilder();
             strSql.Append("update [User] set ");
 
             strSql.Append(" LoanTypePermission = @LoanTypePermission , ");
@@ -77,7 +77,7 @@ namespace DAL
         public UserModel GetUserModel(string strWhere)
         {
 
-            StringBuilder strSql = new StringBuilder();
+            var strSql = new StringBuilder();
             strSql.Append("select top 1 ID, LoginName, [Password], RealName, CreateTime, IsActive, Email, Mobile, [Type], LoanTypePermission  ");
             strSql.Append(" from [User] ");
             if (!string.IsNullOrEmpty(strWhere))
@@ -160,9 +160,5 @@ namespace DAL
             int result = Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.ConnectionStringLocal, CommandType.Text, strSql.ToString(), parameters));
             return result <= 0;
         }
-
-   
-
-      
     }
 }

@@ -36,14 +36,12 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="text-muted bootstrap-admin-box-title">当前还款信息</div>
-                            <div class="text-muted bootstrap-admin-box-title" style="float: right"><a href="javascript:void(0)" id="btn_repay">查看还款计划</a></div>
                         </div>
                         <div class="bootstrap-admin-panel-content">
                             <table class="table table-striped">
                                 <thead>
-
                                     <tr>
-                                        <th>名称:</th>
+                                        <th>借款编号:</th>
                                         <th>还款开始时间:</th>
                                         <th>还款结束时间：</th>
                                         <th>还款本金：</th>
@@ -67,6 +65,39 @@
                 <div class="row">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">还款计划</div>
+                        </div>
+                        <div class="bootstrap-admin-panel-content">
+                            <table class="table table-striped table-bordered" id="Table1">
+                                <thead>
+                                    <tr>
+                                        <th>期号</th>
+                                        <th>应还本金</th>
+                                        <th>应还利息</th>
+                                        <th>应还日期</th>
+                                        <th>状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="Tbody1">
+                                </tbody>
+                            </table>
+                            <script type="text/html" id="Script1">
+                                {{each list as $value i}}                       
+                                    <tr class="gradeX">
+                                        <td>{{$value.PeNumber}}</td>
+                                        <td>{{$value.RePrincipal.toFixed(2) | currencyFormat:'￥'}}</td>
+                                        <td>{{$value.ReInterest.toFixed(2) | currencyFormat:'￥'}}</td>
+                                        <td>{{$value.RePayDate | dateFormat:'yyyy-MM-dd'}}</td>
+                                        <td>{{$value.Status==0?'未还':($value.Status==1?'已还':'作废')}}</td>
+                                    </tr>
+                                {{/each}}
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
                             <div class="text-muted bootstrap-admin-box-title">添加还款信息</div>
                         </div>
                         <div class="bootstrap-admin-panel-content">
@@ -77,19 +108,18 @@
                                         <th>本金:</th>
                                         <th>利息:</th>
                                         <th>指定还款日期：</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            <input id="Principal" type="text" placeholder="请输入本金" /></td>
-                                        <td>
-                                            <input id="Interest" type="text" placeholder="请输入利息" /></td>
-                                        <td>
+                                        <td class="col-lg-2">
+                                            <input id="Principal" type="text" class="form-control" placeholder="请输入本金" /></td>
+                                        <td class="col-lg-2">
+                                            <input id="Interest" type="text" class="form-control" placeholder="请输入利息" /></td>
+                                        <td class="col-lg-3">
                                             <input class="form-control" id="txt_loanTime1" onclick="WdatePicker()" type="text" placeholder="请选择" /></td>
                                         <td>
-                                            <input type="button" id="btn_save" value="保存信息" /></td>
+                                            <input type="button" id="btn_save" class="btn btn-sm btn-default" value="保存信息" /></td>
                                     </tr>
 
                                 </tbody>
@@ -106,13 +136,10 @@
                             <table class="table" id="newtable">
                                 <thead>
                                     <tr>
-
-                                        <th>本金</th>
-                                        <th>利息</th>
+                                        <th>还款日期</th>
+                                        <th>还款本金</th>
+                                        <th>还款利息</th>
                                         <th>创建时间</th>
-                                        <th>指定还款日期</th>
-                                        <th>计息方式</th>
-                                        <th>还款方式</th>
                                         <th>创建人</th>
                                     </tr>
                                 </thead>
@@ -123,41 +150,28 @@
                         <script type="text/html" id="tb_repayList">
                             {{each list as $value i}}                       
                                 <tr class="gradeX">
+                                    <td>{{$value.RepayDate | dateFormat:'yyyy-MM-dd'}}</td>
                                     <td>{{$value.Principal.toFixed(2) | currencyFormat:'￥'}}</td>
                                     <td>{{$value.Interest.toFixed(2) | currencyFormat:'￥'}}</td>
                                     <td>{{$value.CreateTime | dateFormat:'yyyy-MM-dd'}}</td>
-                                    <td>{{$value.RepayDate | dateFormat:'yyyy-MM-dd'}}</td>
-                                    <td>{{$value.BorrowMode==1?'按天':'按月'}}</td>
-
-                                    <td>{{$value.RepaymentMethod==1?'按月付息到期还本':'按月平息'}}</td>
                                     <td>{{$value.RealName}}</td>
-                                    <%-- <td>
-                                        <a class="btn btn-xs btn-default" onclick="delInfo('{{$value.ID}}');">删除</a>
-
-                                    </td>--%>
                                 </tr>
                             {{/each}}
                         </script>
-
                     </div>
-                    <%--<input type="button" id="btn_saveList" value="确认还款" />--%>
                 </div>
-
                 <div class="row">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <div class="text-muted bootstrap-admin-box-title">已经生成的还款信息</div>
+                            <div class="text-muted bootstrap-admin-box-title">每天还款计划</div>
                         </div>
                         <div class="bootstrap-admin-panel-content">
                             <table class="table table-striped table-bordered" id="loanList">
-
                                 <thead>
-
                                     <tr>
-                                        <th>开始时间</th>
-                                        <th>结束时间</th>
+                                        <th>开始时间~结束时间</th>
                                         <th>利息</th>
-
+                                        <th>总计</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb_loanListHtml"></tbody>
@@ -165,12 +179,9 @@
                             <script type="text/html" id="tb_loanList">
                                 {{each list as $value i}}                       
                                         <tr class="gradeX">
-                                            <td>{{$value.BeginDate | dateFormat:'yyyy-MM-dd'}}</td>
-                                            <td>{{$value.EndDate | dateFormat:'yyyy-MM-dd'}}</td>
+                                            <td>{{$value.BeginDate | dateFormat:'yyyy-MM-dd'}}~{{$value.EndDate | dateFormat:'yyyy-MM-dd'}}</td>
                                             <td>{{$value.Interest.toFixed(2) | currencyFormat:'￥'}}</td>
-
-
-
+                                            <td>0</td>
                                         </tr>
                                 {{/each}}
                             </script>
@@ -181,51 +192,6 @@
             </div>
         </div>
         <uc:Footer runat="server" ID="Footer" />
-    </div>
-    <div class="modal fade" id="repay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form id="userForm" class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">还款</h4>
-                </div>
-                <div class="modal-body">
-                    <div id="modalFirst" class="bootstrap-admin-panel-content">
-                        <table id="repayList" class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>期号</th>
-                                    <th>应还本金</th>
-                                    <th>应还利息</th>
-                                    <th>应还日期</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="Tbody1">
-                            </tbody>
-                        </table>
-                        <script type="text/html" id="Script1">
-                            {{each list as $value i}}                       
-                                <tr class="gradeX">
-                                    <td>{{$value.PeNumber}}</td>
-
-
-                                    <td>{{$value.RePrincipal.toFixed(2) | currencyFormat:'￥'}}</td>
-                                    <td>{{$value.ReInterest.toFixed(2) | currencyFormat:'￥'}}</td>
-                                    <td>{{$value.RePayDate | dateFormat:'yyyy-MM-dd'}}</td>
-                                    <td>{{$value.Status==0?'未还':($value.Status==1?'已还':'作废')}}</td>
-                                    <td>{{if $value.Status==0}}
-                                            <a class="btn btn-xs btn-default" onclick="repayLoan('{{$value.ID}}');">还款</a>
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                            {{/each}}
-                        </script>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
 </body>
 </html>
@@ -246,21 +212,12 @@
         var array = [{ "agent": "sel_agent" }];
         //获取url Id
         var id = getPValueByName("id");
-        $("#Principal").val("0.00");
-        $("#Interest").val("0.00");
         getLoanInfo(id);
         showRepaymentComplete();
         getRepayData();
         $.initAgent(array);
 
-        $('#btn_repay').click(function () {
-            //跳转到还款页面
-            // 获取url 参数 id
-            // alert(id);
-            // window.location.href = "RepaymentEidt.aspx?id=" + id;
-            getRepayData_one();
-            $('#repay').modal();
-        });
+        getRepayData_one();
 
         $('#btn_save').click(function () {
             //输入的利息和金额必须一个大于0
@@ -268,12 +225,7 @@
                 if (confirm("是否确认保存当前数据？")) {
                     saveRepayment();
                 }
-
             }
-
-
-
-
         });
 
         $('#btn_saveList').click(function () {
@@ -285,14 +237,8 @@
                 //获取当前的值
                 parmstr = parmstr + arrtd.eq(0).text() + "_" + arrtd.eq(1).text() + "_" + arrtd.eq(2).text() + "_" + arrtd.eq(3).text() + "_" + arrtd.eq(4).text() + "|";
             });
-
             //调用方法
-
-
         });
-
-
-
     });
 
     function validate() {
@@ -316,9 +262,6 @@
     }
 
     function getRepayData() {
-        // (int currentPage, int pageSize, string orderBy, string where)
-
-
         var obj = new Object();
         obj.currentPage = 1;
         obj.pageSize = 1000;
@@ -418,7 +361,9 @@
                 } else {
                     $.alertWarningHtml('alert-' + jsondatas.result, jsondatas.message);
                 }
+                showRepaymentComplete();
                 getRepayData();
+                getRepayData_one();
             }
         });
     }
@@ -472,7 +417,9 @@
                             sFirst: "第一页",
                             sLast: "最后一页"
                         }
-                    }
+                    },
+                    bRetrieve: true,
+                    bProcessing: true
                 });
             }
         });
