@@ -38,19 +38,20 @@
                                 <div class="text-muted bootstrap-admin-box-title">借款列表</div>
                                 <button class="btn btn-xs btn-primary pull-right" id="addLoan">添加</button>
                             </div>
-                            <div class="bootstrap-admin-panel-content">
+                            <div class="bootstrap-admin-panel-content table-responsive">
                                 <table class="table table-striped table-bordered" id="loanList">
                                     <thead>
                                         <tr>
+                                            <th>操作</th>
                                             <th>借款编号</th>
+                                            <th>借款人</th>
+                                            <th>状态</th>
                                             <th>标种类型</th>
                                             <th>借款金额</th>
                                             <th>借款利率</th>
                                             <th>借款期限</th>
                                             <th>还款方式</th>
-                                            <th>状态</th>
                                             <th>借款日期</th>
-                                            <th>操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tb_loanListHtml"></tbody>
@@ -58,15 +59,20 @@
                                 <script type="text/html" id="tb_loanList">
                                     {{each list as $value i}}                       
                                         <tr class="gradeX">
+                                            <td><button class="btn btn-sm btn-default" onclick="getUpdateInfo('{{$value.ID}}');">查看</button>
+                                                {{if ($value.Status==2)}}
+                                                    <button class="btn btn-sm btn-primary" onclick="window.location.href='RepaymentEidt.aspx?id={{$value.ID}}'">还款</button>
+                                                {{/if}}
+                                            </td>
                                             <td>{{$value.LoanNumber}}</td>
+                                            <td>{{$value.CustomerRealName}}</td>
+                                            <td>{{$value.StatusStr}}</td>
                                             <td>{{$value.LoanTypeName}}</td>
                                             <td>{{$value.LoanAmount.toFixed(2) | currencyFormat:'￥'}}</td>
                                             <td>{{$value.LoanRate}}%</td>
                                             <td>{{$value.LoanTerm}}个月</td>      
-                                            <td>{{$value.RepaymentMethodName}}</td>   
-                                            <td>{{$value.StatusStr}}</td>                                       
+                                            <td>{{$value.RepaymentMethodName}}</td>
                                             <td>{{$value.LoanDate | dateFormat:'yyyy-MM-dd'}}</td>
-                                            <td><button class="btn btn-sm btn-default" onclick="getUpdateInfo('{{$value.ID}}');">查看</button></td>
                                         </tr>
                                     {{/each}}
                                 </script>
@@ -97,6 +103,7 @@
             }
             function loadInfo() {
                 var obj = new Object();
+                obj.userId = "<%=UserID%>";
                 obj.currentPage = 1;
                 obj.pageSize = 1000;
                 obj.filter = "";
@@ -126,7 +133,10 @@
                                 }
                             },
                             bRetrieve: true,
-                            bProcessing: true
+                            bProcessing: true,
+                            sScrollX: "100%",
+                            sScrollXInner: "120%",
+                            bScrollCollapse: true
                         });
                     }
                 });

@@ -21,7 +21,7 @@ namespace BLL
         {
             return
                 new BaseClass().GetPageDataTable(
-                    "ID,LoginName,RealName,CASE [Type] WHEN 1 THEN '系统用户' WHEN 2 THEN '营销人员' END TypeStr,Mobile,Email,IsActive,CreateTime",
+                    "ID,LoginName,RealName,CASE [Type] WHEN 1 THEN '管理员' WHEN 2 THEN '财务人员' WHEN 3 THEN '营销部门负责人' WHEN 4 THEN '营销人员' END TypeStr,Mobile,Email,IsActive,CreateTime",
                     "dbo.[User]", filter, orderBy, pageIndex, pageSize, ref totalRows);
         }
 

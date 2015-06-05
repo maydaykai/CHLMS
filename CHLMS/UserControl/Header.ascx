@@ -25,6 +25,7 @@
                             <li><a href="LoginOut.aspx">退出登录</a></li>
                         </ul>
                     </li>
+                    <li><a href="LoginOut.aspx">退出登录</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

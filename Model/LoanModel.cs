@@ -75,7 +75,7 @@ namespace Model
             set;
         }
         /// <summary>
-        /// 借款标状态 1,借款成功；2，还款完成；
+        /// 借款标状态 1,申请成功(等待确认)；2，借款成功(还款中)；3，作废；4，还款成功；
         /// </summary>
         public int Status
         {
@@ -106,6 +106,8 @@ namespace Model
             get;
             set;
         }
+
+        public bool IfOnPlan { get; set; }
 
         public string EndTime
         {

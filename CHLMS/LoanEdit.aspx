@@ -47,7 +47,7 @@
                         <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
                             <form id="loanForm" runat="server" class="form-horizontal">
                                 <fieldset>
-                                    <legend>添加/查看借款</legend>
+                                    <legend id="title">添加借款</legend>
                                     <div id="first" class="form-group hidden">
                                         <label class="col-lg-2 control-label" for="sp_loanNumber">借款编号：</label>
                                         <div class="col-lg-3">
@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-lg-2 control-label" for="sel_repaymentmethod">还款方式：</label>
+                                        <label class="col-lg-2 control-label" for="sel_repaymentmethod">计息模式：</label>
                                         <div class="col-lg-3">
                                             <select id="sel_calculateHead" class="form-control disabled" disabled="disabled">
                                                 <option value="-1">--请选择--</option>
@@ -107,7 +107,7 @@
                                     <div class="form-group">
                                         <label class="col-lg-2 control-label" for="txt_loanDate">借款日期：</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control" id="txt_loanDate" type="text" placeholder="请选择" />
+                                            <input class="form-control" id="txt_loanDate" type="text" placeholder="请选择" onclick="WdatePicker()" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -119,6 +119,7 @@
                                     </div>
                                     <input type="hidden" value="0" id="hid_id" />
                                     <button type="button" id="btn_save" class="btn btn-primary">保存</button>
+                                    <button type="button" class="btn btn-primary hidden" id="btn_update">确认</button>
                                     <button type="button" class="btn btn-primary hidden" id="btn_repay">还款</button>
                                     <button type="reset" class="btn btn-default">重置</button>
                                 </fieldset>
@@ -130,50 +131,6 @@
         </div>
         <uc:Footer runat="server" ID="Footer" />
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="repay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form id="userForm" class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">还款</h4>
-                </div>
-                <div class="modal-body">
-                    <div id="modalFirst" class="bootstrap-admin-panel-content">
-                        <table id="repayList" class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>期号</th>
-                                    <th>应还本金</th>
-                                    <th>应还利息</th>
-                                    <th>应还日期</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tb_repayListHtml">
-                            </tbody>
-                        </table>
-                        <script type="text/html" id="tb_repayList">
-                            {{each list as $value i}}                       
-                                <tr class="gradeX">
-                                    <td>{{$value.PeNumber}}</td>
-                                    <td>{{$value.RePrincipal.toFixed(2) | currencyFormat:'￥'}}</td>
-                                    <td>{{$value.ReInterest.toFixed(2) | currencyFormat:'￥'}}</td>
-                                    <td>{{$value.RePayTime | dateFormat:'yyyy-MM-dd'}}</td>
-                                    <td>{{$value.Status==0?'未还':($value.Status==1?'已还':'作废')}}</td>
-                                    <td>{{if $value.Status==0}}
-                                            <a class="btn btn-xs btn-default" onclick="repayLoan('{{$value.ID}}');">还款</a>
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                            {{/each}}
-                        </script>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
     <script src="vendors/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/twitter-bootstrap-hover-dropdown.min.js"></script>
@@ -181,7 +138,7 @@
     <script type="text/javascript" src="js/DT_bootstrap.js"></script>
     <script type="text/javascript" src="js/template.js"></script>
     <script type="text/javascript" src="js/template-helper.js"></script>
-    <script src="vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="js/My97DatePicker/WdatePicker.js"></script>
     <script src="js/common.js"></script>
 
     <script type="text/javascript">
@@ -190,7 +147,6 @@
         $(function () {
             var array = [{ "agent": "sel_agent" }];
             $.initAgent(array);
-            $('#txt_loanDate').datepicker({ format: 'yyyy-mm-dd' });
             if (type == 2)
                 getUpdateInfo(id);
             $('#btn_save').click(function () {
@@ -198,13 +154,14 @@
                     saveLoan(1);
                 }
             });
+            $('#btn_update').click(function () {
+                if (validate()) {
+                    saveLoan(2);
+                }
+            });
             $('#btn_repay').click(function () {
                 //跳转到还款页面
-                // 获取url 参数 id
-               // alert(id);
                 window.location.href = "RepaymentEidt.aspx?id=" + id;
-                //getRepayData();
-               // $('#repay').modal();
             });
         });
         function saveLoan(type) {
@@ -283,7 +240,7 @@
                 $.alertWarningHtml('alert-warning', '请输入借款年利率');
                 return false;
             }
-            if (isNaN($.trim(loanRate)) || $.trim(loanRate) < 0 || $.trim(loanRate) > 36) {
+            if (isNaN($.trim(loanRate)) || $.trim(loanRate) < 0 || $.trim(loanRate) > 120) {
                 $.alertWarningHtml('alert-warning', '请输入正确的年利率');
                 return false;
             }
@@ -311,21 +268,40 @@
                 success: function (result) {
                     var jsondatas = JSON.parse(result.d);
                     if (jsondatas != null) {
-                        $('#sp_loanNumber').text(jsondatas.LoanNumber);
-                        $('#sel_customerID').val(jsondatas.LoanCustomerID).attr("disabled", "disabled");
-                        $('#txt_loanAmount').val(jsondatas.LoanAmount).attr("disabled", "disabled");
-                        $('#sel_loanTypeID').val(jsondatas.LoanTypeID).attr("disabled", "disabled");
-                        $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod).attr("disabled", "disabled");
-                        $('#txt_loanTerm').val(jsondatas.LoanTerm).attr("disabled", "disabled");
-                        $('#txt_loanRate').val(jsondatas.LoanRate).attr("disabled", "disabled");
-                        $('#sel_agent').val(jsondatas.UserID).attr("disabled", "disabled");
-                        $('#txt_loanDate').val(jsondatas.LoanDate.substr(0, 10)).attr("disabled", "disabled");
-                        $(':reset').attr("disabled", "disabled");
+                        var ifAuditPermission = "<%=IfAuditPermission %>" === "True";
+                        if (!ifAuditPermission || jsondatas.Status !=1) {
+                            $('#sp_loanNumber').text(jsondatas.LoanNumber);
+                            $('#sel_customerID').val(jsondatas.LoanCustomerID).attr("disabled", "disabled");
+                            $('#txt_loanAmount').val(jsondatas.LoanAmount).attr("disabled", "disabled");
+                            $('#sel_loanTypeID').val(jsondatas.LoanTypeID).attr("disabled", "disabled");
+                            $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod).attr("disabled", "disabled");
+                            $('#txt_loanTerm').val(jsondatas.LoanTerm).attr("disabled", "disabled");
+                            $('#txt_loanRate').val(jsondatas.LoanRate).attr("disabled", "disabled");
+                            $('#sel_agent').val(jsondatas.UserID).attr("disabled", "disabled");
+                            $('#txt_loanDate').val(jsondatas.LoanDate.substr(0, 10)).attr("disabled", "disabled");
+                            $(':reset').attr("disabled", "disabled");
+                            if (jsondatas.Status != 1)
+                                $('#btn_repay').removeClass('hidden');
+                            $('#first').removeClass('hidden');
+                            $('#title').text("查看借款");
+                            
+                        }else{
+                            $('#sp_loanNumber').text(jsondatas.LoanNumber);
+                            $('#sel_customerID').val(jsondatas.LoanCustomerID);
+                            $('#txt_loanAmount').val(jsondatas.LoanAmount);
+                            $('#sel_loanTypeID').val(jsondatas.LoanTypeID);
+                            $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod);
+                            $('#txt_loanTerm').val(jsondatas.LoanTerm);
+                            $('#txt_loanRate').val(jsondatas.LoanRate);
+                            $('#sel_agent').val(jsondatas.UserID);
+                            $('#txt_loanDate').val(jsondatas.LoanDate.substr(0, 10));
+                            $('#btn_update,#first').removeClass('hidden');
+                            $('#title').text("确认借款");
+                        }
                     } else {
                         $.alertWarningHtml('alert-danger', '获取数据失败');
                     }
                     $('#btn_save').addClass('hidden');
-                    $('#btn_repay,#first').removeClass('hidden');
                 }
             });
         }

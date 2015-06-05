@@ -105,8 +105,9 @@
                     <div class="btn-group">
                         <label for="sel_type" class="control-label">用户类型:</label>
                         <select id="sel_type" class="form-control">
-                            <option value="1">系统用户</option>
-                            <option value="2">营销人员</option>
+                            <option value="4">营销人员</option>
+                            <option value="2">财务人员</option>
+                            <option value="3">营销部门负责人</option>
                         </select>
                     </div>
                     <div class="form-group">

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
@@ -25,29 +28,43 @@ namespace WebUI.WebService
         {
             int totalRows = 0;
             DataTable dt = _bll.GetPageCustomerList(orderBy, currentPage, pageSize, ref totalRows);
-            //var jsondatas = new
-            //    {
-            //        draw = currentPage,
-            //        recordsTotal = totalRows,
-            //        recordsFiltered = totalRows,
-            //        data = dt
-            //    };
             return JsonConvert.SerializeObject(dt);
         }
-
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
-        public string AddCustomer(CustomerModel model)
+        public string GetCustomerListDt(string jsondatas)
+        {
+            DataTablesModel model = JsonHelper.JsonDeserialize(jsondatas);
+            int totalRows = 0;
+            DataTable dt = _bll.GetPageCustomerList("ID", 1, 10, ref totalRows);
+            return JsonHelper.SerializeDataTablesData(model.sEcho, totalRows, dt);
+        }
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string AddCustomer(CustomerModel model, int type)
         {
             string errorMsg = "";
-            if (!_bll.CustomerAddValidate(model,ref errorMsg))
+            model.Name = StringHelper.GetFirstPYLetter(model.RealName);
+            if (type == 1) //添加
             {
-                return JsonConvert.SerializeObject(AlertHelper.WarningMessage(errorMsg));
+                if (!_bll.CustomerAddValidate(model, ref errorMsg))
+                {
+                    return JsonConvert.SerializeObject(AlertHelper.WarningMessage(errorMsg));
+                }
+                int id = _bll.AddCustomer(model);
+                return id > 0
+                           ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage())
+                           : JsonConvert.SerializeObject(AlertHelper.ErrorMessage());
             }
-            int id = _bll.AddCustomer(model);
-            return id > 0
-                       ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage())
-                       : JsonConvert.SerializeObject(AlertHelper.ErrorMessage());
+            return _bll.UpdateCustomer(model)
+                       ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage("修改成功"))
+                       : JsonConvert.SerializeObject(AlertHelper.ErrorMessage("修改失败"));
+        }
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetCustomerModel(int id)
+        {
+            return JsonConvert.SerializeObject(_bll.GetCustomerModel(id));
         }
     }
 }

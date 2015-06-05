@@ -14,25 +14,35 @@ namespace BLL
     {
         private LoanDAL _dal = new LoanDAL();
         #region 借款数据
+
         /// <summary>
         /// 获取借款列表
         /// </summary>
+        /// <param name="where"></param>
         /// <param name="orderBy"></param>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="totalRows"></param>
         /// <returns></returns>
-        public DataTable GetPageLoanList(string orderBy, int pageIndex, int pageSize, ref int totalRows)
+        public DataTable GetPageLoanList(string where, string orderBy, int pageIndex, int pageSize, ref int totalRows)
         {
-            string where = "";
-            return new BaseClass().GetPageDataTable("L.ID,L.LoanNumber,T.Name LoanTypeName,L.LoanAmount,L.LoanRate,L.LoanTerm,M.Name RepaymentMethodName,CASE L.Status WHEN 1 THEN '借款成功' WHEN 2 THEN '还款成功' END StatusStr,L.LoanDate", "dbo.[Loan] L LEFT JOIN dbo.DimLoanType T ON L.LoanTypeID=T.ID LEFT JOIN dbo.DimRepaymentMethod M ON L.RepaymentMethod=M.ID", where, orderBy, pageIndex, pageSize, ref totalRows);
+            return new BaseClass().GetPageDataTable("L.ID,L.LoanNumber,T.Name LoanTypeName,L.LoanAmount,L.LoanRate,L.LoanTerm,M.Name RepaymentMethodName,L.Status,CASE L.Status WHEN 1 THEN '申请成功(等待确认)' WHEN 2 THEN '还款中'WHEN 3 THEN '作废' WHEN 4 THEN '还款成功' END StatusStr,L.LoanDate,C.RealName CustomerRealName", "dbo.[Loan] L LEFT JOIN dbo.DimLoanType T ON L.LoanTypeID=T.ID LEFT JOIN dbo.DimRepaymentMethod M ON L.RepaymentMethod=M.ID LEFT JOIN dbo.Customer C ON L.LoanCustomerID=C.ID", where, orderBy, pageIndex, pageSize, ref totalRows);
         }
+
         /// <summary>
-        /// 添加借款并生成还款计划
+        /// 添加借款等待确认
         /// </summary>
         public bool AddLoan(LoanModel model)
         {
             return _dal.AddLoan(model);
+        }
+
+        /// <summary>
+        /// 确认借款并生成还款计划
+        /// </summary>
+        public bool BuildPlan(LoanModel model)
+        {
+            return _dal.BuildPlan(model);
         }
 
         /// <summary>

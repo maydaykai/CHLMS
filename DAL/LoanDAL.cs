@@ -14,13 +14,13 @@ namespace DAL
     {
         #region 借款数据
         /// <summary>
-        /// 添加借款并生成还款计划
+        /// 确认借款并生成还款计划
         /// </summary>
-        public bool AddLoan(LoanModel model)
+        public bool BuildPlan(LoanModel model)
         {
             SqlParameter[] parameters = {
 			            new SqlParameter("@LoanDate", SqlDbType.Date){Value= model.LoanDate},
-                        new SqlParameter("@UserID", SqlDbType.Int,4){Value= model.UserID},
+                        new SqlParameter("@LoanID", SqlDbType.Int,4){Value= model.ID},
                         new SqlParameter("@LoanAmount", SqlDbType.Decimal,9){Value= model.LoanAmount},
                         new SqlParameter("@LoanRate", SqlDbType.Decimal,9){Value= model.LoanRate},
                         new SqlParameter("@LoanTerm", SqlDbType.Int,4){Value= model.LoanTerm},
@@ -36,13 +36,34 @@ namespace DAL
             return num > 0;
         }
         /// <summary>
+        /// 添加借款等待确认
+        /// </summary>
+        public bool AddLoan(LoanModel model)
+        {
+            const string sql = "INSERT INTO dbo.Loan ( LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, BorrowMode,  CalculateHead, LoanTypeID, [Status], UserID, CreateTime, LoanDate) VALUES (@LoanCustomerID, dbo.GetLoanNumber(@LoanDate), @LoanAmount, @LoanRate, @LoanTerm, @RepaymentMethod, @BorrowMode, @CalculateHead, @LoanTypeID, 1, @UserID, GETDATE(), @LoanDate);SELECT @@IDENTITY;";
+            SqlParameter[] parameters = {
+			            new SqlParameter("@LoanDate", SqlDbType.Date){Value= model.LoanDate},
+                        new SqlParameter("@UserID", SqlDbType.Int,4){Value= model.UserID},
+                        new SqlParameter("@LoanAmount", SqlDbType.Decimal,9){Value= model.LoanAmount},
+                        new SqlParameter("@LoanRate", SqlDbType.Decimal,9){Value= model.LoanRate},
+                        new SqlParameter("@LoanTerm", SqlDbType.Int,4){Value= model.LoanTerm},
+                        new SqlParameter("@RepaymentMethod", SqlDbType.Int,4){Value= model.RepaymentMethod},
+                        new SqlParameter("@BorrowMode", SqlDbType.SmallInt){Value= model.BorrowMode},
+                        new SqlParameter("@CalculateHead", SqlDbType.SmallInt){Value= model.CalculateHead},
+                        new SqlParameter("@LoanTypeID", SqlDbType.Int,4){Value= model.LoanTypeID},
+                        new SqlParameter("@LoanCustomerID", SqlDbType.Int,4){Value= model.LoanCustomerID}
+                        };
+            object obj = SqlHelper.ExecuteScalar(SqlHelper.ConnectionStringLocal, CommandType.Text, sql, parameters);
+            return obj != null && Convert.ToInt32(obj) > 0;
+        }
+        /// <summary>
         /// 得到一个对象实体
         /// </summary>
         public LoanModel GetLoanModel(string strWhere)
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select top 1 ID, CreateTime, LoanDate, UserID, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, LoanTypeID, [Status]  ");
+            strSql.Append("select top 1 ID, CreateTime, LoanDate, UserID, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, LoanTypeID, [Status] ,IfOnPlan ");
             strSql.Append(" from Loan ");
             if (!string.IsNullOrEmpty(strWhere))
             {
@@ -102,6 +123,10 @@ namespace DAL
                 if (ds.Tables[0].Rows[0]["Status"].ToString() != "")
                 {
                     model.Status = int.Parse(ds.Tables[0].Rows[0]["Status"].ToString());
+                }
+                if (ds.Tables[0].Rows[0]["IfOnPlan"].ToString() != "")
+                {
+                    model.IfOnPlan = bool.Parse(ds.Tables[0].Rows[0]["IfOnPlan"].ToString());
                 }
                 #endregion
                 return model;

@@ -25,13 +25,6 @@ namespace WebUI.WebService
         {
             int totalRows = 0;
             DataTable dt = _bll.GetPageUserList(orderBy, currentPage, pageSize, filter, ref totalRows);
-            //var jsondatas = new
-            //    {
-            //        draw = currentPage,
-            //        recordsTotal = totalRows,
-            //        recordsFiltered = totalRows,
-            //        data = dt
-            //    };
             return JsonConvert.SerializeObject(dt);
         }
 

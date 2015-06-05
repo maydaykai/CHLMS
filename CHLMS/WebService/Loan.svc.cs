@@ -22,17 +22,14 @@ namespace WebUI.WebService
         #region 借款
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
-        public string GetLoanList(int currentPage, int pageSize, string filter, string orderBy)
+        public string GetLoanList(int currentPage, int pageSize, string filter, string orderBy, int userId)
         {
             int totalRows = 0;
-            DataTable dt = _bll.GetPageLoanList(orderBy, currentPage, pageSize, ref totalRows);
-            //var jsondatas = new
-            //    {
-            //        draw = currentPage,
-            //        recordsTotal = totalRows,
-            //        recordsFiltered = totalRows,
-            //        data = dt
-            //    };
+            string where = "";
+            UserModel user = new UserBLL().GetUserModel(userId);
+            if (user.Type == 4)
+                where += "UserID=" + userId;
+            DataTable dt = _bll.GetPageLoanList(where, orderBy, currentPage, pageSize, ref totalRows);
             return JsonConvert.SerializeObject(dt);
         }
         [OperationContract]
@@ -45,7 +42,9 @@ namespace WebUI.WebService
                            ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage())
                            : JsonConvert.SerializeObject(AlertHelper.ErrorMessage());
             }
-            return "";
+            return _bll.BuildPlan(model)
+                       ? JsonConvert.SerializeObject(AlertHelper.SuccessMessage())
+                       : JsonConvert.SerializeObject(AlertHelper.ErrorMessage());
         }
 
         [OperationContract]

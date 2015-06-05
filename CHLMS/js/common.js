@@ -29,7 +29,7 @@
         var obj = new Object();
         obj.currentPage = 1;
         obj.pageSize = 100;
-        obj.filter = "Type=2";
+        obj.filter = "Type >= 2";
         obj.orderBy = "ID";
         var jsonobj = JSON.stringify(obj);
         $.commonAjax("/WebService/User.svc/GetUserList", jsonobj, function (data) {

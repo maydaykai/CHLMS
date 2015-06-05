@@ -107,6 +107,7 @@
     <Content Include="js\common.js" />
     <Content Include="js\dataTables.tableTools.js" />
     <Content Include="js\DT_bootstrap.js" />
+    <Content Include="js\jquery.formatCurrency-1.4.0.js" />
     <Content Include="js\jquery.query.js" />
     <Content Include="js\My97DatePicker\calendar.js" />
     <Content Include="js\My97DatePicker\lang\en.js" />

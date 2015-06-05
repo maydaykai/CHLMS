@@ -55,7 +55,7 @@ namespace Model
         public string Mobile { get; set; }
 
         /// <summary>
-        /// Type
+        /// Type 1，管理员；2，财务人员；3，营销部门负责人；4，营销人员
         /// </summary>
         public int Type { get; set; }
 

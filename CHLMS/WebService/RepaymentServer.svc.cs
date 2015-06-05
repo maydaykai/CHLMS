@@ -113,7 +113,28 @@ namespace WebUI.js.WebService
             return JsonConvert.SerializeObject(dt);
         }
 
-        
+        /// <summary>
+        /// 查询输入当前还款信息
+        /// </summary>
+        /// <param name="LoadId"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string RepaymentPlanModel(int LoadId, DateTime endTime)
+        {
+
+            Exist_RepaymentPlanModel dt = _bll.RepaymentPlanModel(LoadId, endTime);
+            return JsonConvert.SerializeObject(dt);
+        }
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, Method = "POST")]
+        public string GetCompleteRepaymentInfo(int loadId)
+        {
+            return JsonConvert.SerializeObject(_bll.GetCompleteRepaymentInfo(loadId));
+        }
+
         // 在此处添加更多操作并使用 [OperationContract] 标记它们
     }
 }

@@ -21,10 +21,12 @@ namespace BLL
         /// <param name="pageSize"></param>
         /// <param name="totalRows"></param>
         /// <returns></returns>
-        public DataTable GetPageCustomerList(string orderBy, int pageIndex, int pageSize, ref int totalRows)
+        public DataTable GetPageCustomerList(string orderBy, int pageIndex, int pageSize, ref int totalRows, string fields="")
         {
             string where = "";
-            return new BaseClass().GetPageDataTable("ID,Name,RealName,Mobile,[Identity],CreateTime", "dbo.Customer", where, orderBy, pageIndex, pageSize, ref totalRows);
+            if (string.IsNullOrEmpty(fields))
+                fields = "ID,Name,RealName,Mobile,[Identity],CreateTime";
+            return new BaseClass().GetPageDataTable(fields, "dbo.Customer", where, orderBy, pageIndex, pageSize, ref totalRows);
         }
 
         /// <summary>
@@ -45,5 +47,22 @@ namespace BLL
         {
             return _dal.AddCustomer(model);
         }
+
+        /// <summary>
+        /// 更新一条数据
+        /// </summary>
+        public bool UpdateCustomer(CustomerModel model)
+        {
+            return _dal.UpdateCustomer(model);
+        }
+
+        /// <summary>
+        /// 得到一个对象实体
+        /// </summary>
+        public CustomerModel GetCustomerModel(int id)
+        {
+            return _dal.GetCustomerModel("ID=" + id);
+        }
+
     }
 }

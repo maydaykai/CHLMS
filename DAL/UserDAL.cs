@@ -160,5 +160,7 @@ namespace DAL
             int result = Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.ConnectionStringLocal, CommandType.Text, strSql.ToString(), parameters));
             return result <= 0;
         }
+
+
     }
 }

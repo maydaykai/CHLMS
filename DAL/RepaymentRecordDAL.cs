@@ -38,14 +38,7 @@ namespace DAL
             parameters[5].Value = model.LoanID;
 
             object obj = SqlHelper.ExecuteScalar(SqlHelper.ConnectionStringLocal, CommandType.StoredProcedure, "Proc_RepaymentRecordAdd", parameters);
-            if (obj == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return Convert.ToInt32(obj);
-            }
+            return obj == null ? 0 : Convert.ToInt32(obj);
         }
 
         /// <summary>
@@ -63,14 +56,40 @@ namespace DAL
             parameters[0].Value = ID;
 
             int rows = SqlHelper.ExecuteNonQuery(SqlHelper.ConnectionStringLocal, CommandType.Text, strSql.ToString(), parameters);
-            if (rows > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return rows > 0;
+        }
+
+
+
+        /// <summary>
+        /// 查询是否按照还款计划还款
+        /// </summary>
+        /// <param name="LoadId"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public DataSet GetCurrRepaymentPlanInfo(int LoadId, DateTime endTime)
+        {
+            SqlParameter[] parameters = {
+			            new SqlParameter("@LoadId", SqlDbType.Int,4){Value= LoadId},
+                        new SqlParameter("@endTime", SqlDbType.DateTime){Value= endTime},
+                        };
+            DataSet ds = SqlHelper.ExecuteDataSet(SqlHelper.ConnectionStringLocal, CommandType.StoredProcedure, "Exist_RepaymentPlan", parameters);
+            return ds;
+        }
+
+        /// <summary>
+        /// 查询已还款数据
+        /// </summary>
+        /// <param name="loadId"></param>
+        /// <returns></returns>
+        public DataTable GetCompleteRepaymentInfo(int loadId)
+        {
+            const string sql = "SELECT SUM(Principal) SurPrincipal,SUM(Interest) SurInterest,(SELECT SUM((DATEDIFF(day,BeginDate,EndDate)+1) * Interest) FROM dbo.RepaymentComplete WHERE LoanID=@LoadId AND [Status]=1) ReInterest FROM dbo.RepaymentRecord WHERE LoanID=@LoadId";
+            SqlParameter[] parameters = {
+			            new SqlParameter("@LoadId", SqlDbType.Int,4){Value= loadId}
+                        };
+            DataSet ds = SqlHelper.ExecuteDataSet(SqlHelper.ConnectionStringLocal, CommandType.Text, sql, parameters);
+            return ds != null ? ds.Tables[0] : null;
         }
     }
 }
