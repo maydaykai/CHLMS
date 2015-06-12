@@ -56,8 +56,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-lg-2 control-label" for="sel_customerID">借款人：</label>
-                                        <div class="col-lg-3">
-                                            <asp:ListBox runat="server" ID="sel_customerID" CssClass="form-control"></asp:ListBox>
+                                        <div class="col-lg-7">
+                                            <asp:ListBox runat="server" ID="sel_customerID" CssClass="form-control pull-left" Width="50%"></asp:ListBox>
+                                            <input id="remote_object_data" autocomplete="off" data-provide="typeahead" type="text" class="input-sm form-control pull-right" style="width:50%;" placeholder="请输入借款人姓名拼音首字母或中文" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -79,13 +80,15 @@
                                                 <option value="0">--请选择--</option>
                                                 <option value="1">按月付息到期还本</option>
                                                 <option value="2">按月平息</option>
+                                                <option value="3">按天计息按月还款</option>
+                                                <option value="4">按月等额本息</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-lg-2 control-label" for="sel_repaymentmethod">计息模式：</label>
                                         <div class="col-lg-3">
-                                            <select id="sel_calculateHead" class="form-control disabled" disabled="disabled">
+                                            <select id="sel_calculateHead" class="form-control">
                                                 <option value="-1">--请选择--</option>
                                                 <option value="0" selected="selected">算头不算尾</option>
                                                 <option value="1">算头算尾</option>
@@ -93,7 +96,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-lg-2 control-label" for="txt_loanTerm">借款期限(月)：</label>
+                                        <label class="col-lg-2 control-label" for="txt_loanTerm">借款期限(月/天)：</label>
                                         <div class="col-lg-3">
                                             <input class="form-control" id="txt_loanTerm" type="number" placeholder="请输入借款期限" />
                                         </div>
@@ -139,6 +142,7 @@
     <script type="text/javascript" src="js/template.js"></script>
     <script type="text/javascript" src="js/template-helper.js"></script>
     <script src="js/My97DatePicker/WdatePicker.js"></script>
+    <script src="vendors/boostrap3-typeahead/bootstrap3-typeahead.min.js"></script>
     <script src="js/common.js"></script>
 
     <script type="text/javascript">
@@ -163,6 +167,35 @@
                 //跳转到还款页面
                 window.location.href = "RepaymentEidt.aspx?id=" + id;
             });
+            var name2Id = {};//姓名对应的id
+            $("#remote_object_data").typeahead({
+                source: function (query, process) {
+                    //query是输入的值
+                    var obj = new Object();
+                    obj.currentPage = 1;
+                    obj.pageSize = 1000;
+                    obj.filter = "";
+                    obj.orderBy = "ID";
+                    var jsonobj = JSON.stringify(obj);
+                    $.commonAjax("/WebService/Customer.svc/GetCustomerList", jsonobj, function (data) {
+                        var jsondatas = JSON.parse(data.d);
+                        if (jsondatas != null && jsondatas.length > 0) {
+                            var array = [];
+                            $(jsondatas).each(function () {
+                                name2Id[this["Name"] + "|" + this["RealName"] + "|" + this["Identity"]] = this["ID"];//键值对保存下来。
+                                array.push(this["Name"] + "|" + this["RealName"] + "|" + this["Identity"]);
+                            });
+                            process(array);
+                        }
+                    });
+                },
+                items: 8,
+                updater: function (item) {
+                    $('#sel_customerID').val(name2Id[item]);
+                    return item;
+                },
+                delay: 500
+            });
         });
         function saveLoan(type) {
             var obj = new Object();
@@ -173,7 +206,7 @@
                 LoanTypeID: $.trim($('#sel_loanTypeID').val()),
                 RepaymentMethod: $.trim($('#sel_repaymentmethod').val()),
                 CalculateHead: $.trim($('#sel_calculateHead').val()),
-                BorrowMode: 1,
+                BorrowMode: $.trim($('#sel_repaymentmethod').val()) != 3 ? 1 : 0,
                 LoanTerm: $.trim($('#txt_loanTerm').val()),
                 LoanRate: $('#txt_loanRate').val(),
                 UserID: $('#sel_agent').val(),
@@ -232,7 +265,7 @@
                 $.alertWarningHtml('alert-warning', '请输入借款期限');
                 return false;
             }
-            if (isNaN($.trim(loanTerm)) || $.trim(loanTerm) < 1 || $.trim(loanTerm) > 36) {
+            if (isNaN($.trim(loanTerm)) || $.trim(loanTerm) < 1 || $.trim(loanTerm) > 120) {
                 $.alertWarningHtml('alert-warning', '请输入正确的期限');
                 return false;
             }
@@ -275,6 +308,7 @@
                             $('#txt_loanAmount').val(jsondatas.LoanAmount).attr("disabled", "disabled");
                             $('#sel_loanTypeID').val(jsondatas.LoanTypeID).attr("disabled", "disabled");
                             $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod).attr("disabled", "disabled");
+                            $('#sel_calculateHead').val(jsondatas.CalculateHead).attr("disabled", "disabled");
                             $('#txt_loanTerm').val(jsondatas.LoanTerm).attr("disabled", "disabled");
                             $('#txt_loanRate').val(jsondatas.LoanRate).attr("disabled", "disabled");
                             $('#sel_agent').val(jsondatas.UserID).attr("disabled", "disabled");
@@ -291,6 +325,7 @@
                             $('#txt_loanAmount').val(jsondatas.LoanAmount);
                             $('#sel_loanTypeID').val(jsondatas.LoanTypeID);
                             $('#sel_repaymentmethod').val(jsondatas.RepaymentMethod);
+                            $('#sel_calculateHead').val(jsondatas.CalculateHead)
                             $('#txt_loanTerm').val(jsondatas.LoanTerm);
                             $('#txt_loanRate').val(jsondatas.LoanRate);
                             $('#sel_agent').val(jsondatas.UserID);

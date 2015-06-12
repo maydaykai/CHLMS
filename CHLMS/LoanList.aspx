@@ -135,7 +135,7 @@
                             bRetrieve: true,
                             bProcessing: true,
                             sScrollX: "100%",
-                            sScrollXInner: "120%",
+                            sScrollXInner: "150%",
                             bScrollCollapse: true
                         });
                     }

@@ -144,6 +144,8 @@
     <Content Include="LoanTypeList.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="LoginOut.aspx" />
+    <Content Include="PDM\CHLMS.pdb" />
+    <Content Include="PDM\CHLMS.sql" />
     <Content Include="RepaymentEidt.aspx" />
     <Content Include="test.aspx" />
     <Content Include="UserControl\Footer.ascx" />
@@ -1507,6 +1509,7 @@
     <Content Include="vendors\uniform\www\downloads\.keep" />
     <Content Include="vendors\uniform\www\stylesheets\multiple-themes.scss" />
     <Content Include="packages.config" />
+    <Content Include="PDM\CHLMS.PDM" />
     <None Include="Properties\PublishProfiles\chlms.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

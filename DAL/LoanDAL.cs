@@ -63,7 +63,7 @@ namespace DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select top 1 ID, CreateTime, LoanDate, UserID, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, RepaymentMethod, LoanTypeID, [Status] ,IfOnPlan ");
+            strSql.Append("select top 1 ID, Status, CreateTime, LoanDate, UserID, CalculateHead, IfOnPlan, LoanCustomerID, LoanNumber, LoanAmount, LoanRate, LoanTerm, BorrowMode, RepaymentMethod, LoanTypeID  ");
             strSql.Append(" from Loan ");
             if (!string.IsNullOrEmpty(strWhere))
             {
@@ -80,6 +80,10 @@ namespace DAL
                 {
                     model.ID = int.Parse(ds.Tables[0].Rows[0]["ID"].ToString());
                 }
+                if (ds.Tables[0].Rows[0]["Status"].ToString() != "")
+                {
+                    model.Status = int.Parse(ds.Tables[0].Rows[0]["Status"].ToString());
+                }
                 if (ds.Tables[0].Rows[0]["CreateTime"].ToString() != "")
                 {
                     model.CreateTime = DateTime.Parse(ds.Tables[0].Rows[0]["CreateTime"].ToString());
@@ -91,6 +95,21 @@ namespace DAL
                 if (ds.Tables[0].Rows[0]["UserID"].ToString() != "")
                 {
                     model.UserID = int.Parse(ds.Tables[0].Rows[0]["UserID"].ToString());
+                }
+                if (ds.Tables[0].Rows[0]["CalculateHead"].ToString() != "")
+                {
+                    model.CalculateHead = int.Parse(ds.Tables[0].Rows[0]["CalculateHead"].ToString());
+                }
+                if (ds.Tables[0].Rows[0]["IfOnPlan"].ToString() != "")
+                {
+                    if ((ds.Tables[0].Rows[0]["IfOnPlan"].ToString() == "1") || (ds.Tables[0].Rows[0]["IfOnPlan"].ToString().ToLower() == "true"))
+                    {
+                        model.IfOnPlan = true;
+                    }
+                    else
+                    {
+                        model.IfOnPlan = false;
+                    }
                 }
                 if (ds.Tables[0].Rows[0]["LoanCustomerID"].ToString() != "")
                 {
@@ -112,6 +131,10 @@ namespace DAL
                 {
                     model.LoanTerm = int.Parse(ds.Tables[0].Rows[0]["LoanTerm"].ToString());
                 }
+                if (ds.Tables[0].Rows[0]["BorrowMode"].ToString() != "")
+                {
+                    model.BorrowMode = int.Parse(ds.Tables[0].Rows[0]["BorrowMode"].ToString());
+                }
                 if (ds.Tables[0].Rows[0]["RepaymentMethod"].ToString() != "")
                 {
                     model.RepaymentMethod = int.Parse(ds.Tables[0].Rows[0]["RepaymentMethod"].ToString());
@@ -119,14 +142,6 @@ namespace DAL
                 if (ds.Tables[0].Rows[0]["LoanTypeID"].ToString() != "")
                 {
                     model.LoanTypeID = int.Parse(ds.Tables[0].Rows[0]["LoanTypeID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["Status"].ToString() != "")
-                {
-                    model.Status = int.Parse(ds.Tables[0].Rows[0]["Status"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["IfOnPlan"].ToString() != "")
-                {
-                    model.IfOnPlan = bool.Parse(ds.Tables[0].Rows[0]["IfOnPlan"].ToString());
                 }
                 #endregion
                 return model;

@@ -19,7 +19,7 @@ namespace WebUI
         private void InitAgent()
         {
             int totalRows = 0;
-            sel_customerID.DataSource = new CustomerBLL().GetPageCustomerList("ID", 1, 100, ref totalRows, "ID,RealName+'|'+[Identity] DisplayName");
+            sel_customerID.DataSource = new CustomerBLL().GetPageCustomerList("ID", 1, 1000, ref totalRows, "ID,RealName+'|'+[Identity] DisplayName");
             sel_customerID.DataValueField = "ID";
             sel_customerID.DataTextField = "DisplayName";
             sel_customerID.Rows = 1;

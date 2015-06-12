@@ -137,7 +137,8 @@ namespace Model
                 {
                     case 1: relust = "按月付息到期还本"; break;
                     case 2: relust = "按月平息"; break;
-
+                    case 3: relust = "按天计息按月还款"; break;
+                    case 4: relust = "按月等额本息"; break;
                 }
                 return relust;
             }
