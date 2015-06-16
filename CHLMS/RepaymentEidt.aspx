@@ -136,25 +136,19 @@
                                 <thead>
                                     <tr>
                                         <th>已还本金:</th>
+                                        <th>剩余本金:</th>
                                         <th>已还利息:</th>
                                         <th>剩余利息：</th>
                                     </tr>
                                 </thead>
                                 <tbody id="completeInfoHtml">
-                                    <tr class="success">
-                                        <td class="col-lg-2">
-                                            </td>
-                                        <td class="col-lg-2">
-                                            Some value here</td>
-                                        <td class="col-lg-2">
-                                            Some value here</td>
-                                    </tr>
                                 </tbody>
                                 <script type="text/html" id="completeInfo">
                                     <tr class="success">
-                                        <td class="col-lg-2">{{SurPrincipal==null ? 0 : SurPrincipal}}</td>
-                                        <td class="col-lg-2">{{SurInterest==null ? 0 : SurInterest}}</td>
-                                        <td class="col-lg-2">{{ReInterest==null ? 0 : ReInterest}}</td>
+                                        <td class="col-lg-2">{{CompletePrincipal.toFixed(2) | currencyFormat:'￥'}}</td>
+                                        <td class="col-lg-2">{{$helpers. currencyFormat((LoanAmount - CompletePrincipal).toFixed(2), '￥')}}</td>
+                                        <td class="col-lg-2">{{CompleteInterest.toFixed(2) | currencyFormat:'￥'}}</td>
+                                        <td class="col-lg-2">{{$helpers. currencyFormat((ReInterest - CompleteInterest).toFixed(2), '￥')}}</td>
                                     </tr>
                             </script>
                             </table>
@@ -201,18 +195,6 @@
                                 <tbody id="tb_repayListHtml">
                                 </tbody>
                             </table>
-                            <div id="sun1"><a href="javascript:void(0)" id="btn_saveList">查看已还信息</a></div>
-                            <div id="sun2" style="display: none">
-                                <table class="table" id="Table2">
-                                    <tr  class="gradeX">
-                                        <td>合计：</td>
-                                        <td><span id="sumPrincipal_span"></span></td>
-                                        <td><span id="sumInterest_span"></span></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </table>
-                            </div>
                         </div>
                         <script type="text/html" id="tb_repayList">
                             {{each list as $value i}}                       
@@ -281,31 +263,10 @@
             else
                 $(this).removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down").attr("title", "显示");
         });
-        $('#btn_saveList').click(function () {
-            //循环表格信息
-            $("#sun1").hide();
-            $("#sun2").show();
-            var parmstr = "";
-            var sumPrincipal = 0;
-            var sumInterest = 0;
-            $("#newtable tr:gt(0)").each(function (i) {
-                //组装数据 ￥3.00
-                // alert(i);
-                var arrtd = $(this).children();
-                sumPrincipal = parseFloat(sumPrincipal) + parseFloat(arrtd.eq(1).text().replace("￥", ""));
-                sumInterest = parseFloat(sumInterest) + parseFloat(arrtd.eq(2).text().replace("￥", ""));
-                //获取当前的值
-                // parmstr = parmstr + arrtd.eq(0).text() + "_" + arrtd.eq(1).text() + "_" + arrtd.eq(2).text() + "_" + arrtd.eq(3).text() + "_" + arrtd.eq(4).text() + "|";
-            });
-            //调用方法sumInterest
-            $("#sumPrincipal_span").text(sumPrincipal);
-            $("#sumInterest_span").text(sumInterest);
-            // alert(sumPrincipal); alert(sumInterest);
-        });
     });
 
 
-
+    //还款验证
     function validate() {
 
         var loanTime = $("#txt_loanTime1").val();
@@ -370,7 +331,7 @@
             dataType: 'json',
             success: function (result) {
                 var jsondatas = JSON.parse(result.d);
-                var html = template("completeInfo", jsondatas);
+                var html = template("completeInfo", jsondatas[0]);
                 $('#completeInfoHtml').html(html);
             }
         });
@@ -412,7 +373,7 @@
                 $('#RepaymentMethod').text(jsondatas.RepaymentMethodStr);
                 $('#LoanAmount').text(jsondatas.LoanAmount).formatCurrency();
                 $('#LoanNumber').text(jsondatas.LoanNumber);
-                $('#endtime').text(jsondatas.EndTime);
+                $('#endtime').text(jsondatas.EndDate);
                 $('#IfOnPlan').text(jsondatas.IfOnPlan == true ? "是" : "否");
             }
         });

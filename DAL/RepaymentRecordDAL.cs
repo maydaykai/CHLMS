@@ -84,7 +84,7 @@ namespace DAL
         /// <returns></returns>
         public DataTable GetCompleteRepaymentInfo(int loadId)
         {
-            const string sql = "SELECT SUM(Principal) SurPrincipal,SUM(Interest) SurInterest,(SELECT SUM((DATEDIFF(day,BeginDate,EndDate)+1) * Interest) FROM dbo.RepaymentComplete WHERE LoanID=@LoadId AND [Status]=1) ReInterest FROM dbo.RepaymentRecord WHERE LoanID=@LoadId";
+            const string sql = "SELECT ISNULL(SUM(Principal),0) CompletePrincipal,(SELECT ISNULL(SUM(LoanAmount),0) FROM dbo.Loan WHERE ID=@LoadId) LoanAmount, ISNULL(SUM(Interest),0) CompleteInterest,(SELECT ISNULL(SUM((DATEDIFF(day,BeginDate,EndDate)+1) * Interest),0) FROM dbo.RepaymentComplete WHERE LoanID=@LoadId AND [Status]=1) ReInterest FROM dbo.RepaymentRecord WHERE LoanID=@LoadId";
             SqlParameter[] parameters = {
 			            new SqlParameter("@LoadId", SqlDbType.Int,4){Value= loadId}
                         };

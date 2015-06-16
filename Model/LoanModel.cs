@@ -109,12 +109,13 @@ namespace Model
 
         public bool IfOnPlan { get; set; }
 
-        public string EndTime
+        public string EndDate
         {
             get
             {
-                return LoanDate.AddMonths(LoanTerm).ToString("yyyy-MM-dd");
-
+                return BorrowMode == 0
+                           ? LoanDate.AddDays(Math.Ceiling(LoanTerm/30.00)*30-1).ToString("yyyy-MM-dd")
+                           : LoanDate.AddMonths(LoanTerm).ToString("yyyy-MM-dd");
             }
 
         }
